@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?before=additions">
+         <menu
+               label="System">
+            <command
+                  commandId="org.maziarz.jdt.utils.commands.copyLocalPath"
+                  label="Copy full path"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.maziarz.utils.ui.commands.openTerminal"
+                  label="Open terminal"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.maziarz.utils.ui.commands.openTerminal"
+                  label="Open with window manager"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.maziarz.jdt.utils.handlers.CopyLocalPathHandler"
+            id="org.maziarz.jdt.utils.commands.copyLocalPath"
+            name="Copy object full paths to clipboard">
+      </command>
+      <command
+            defaultHandler="org.maziarz.jdt.utils.handlers.OpenContainerHandler"
+            id="org.maziarz.jdt.utils.commands.openTerminal"
+            name="Open in terminal">
+         <commandParameter
+               id="org.maziarz.jdt.utils.commands.terminal"
+               name="command"
+               optional="true"
+               values="org.maziarz.jdt.utils.commands.TerminalCommandValues">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="org.maziarz.jdt.utils.handlers.OpenContainerHandler"
+            id="org.maziarz.utils.ui.commands.openWindowManager"
+            name="Open with window manager">
+         <commandParameter
+               id="org.maziarz.utils.ui.commands.manager"
+               name="command"
+               optional="true"
+               values="org.maziarz.utils.ui.commands.WindowManagersCommandValues">
+         </commandParameter>
+      </command>
+   </extension>
+
+</plugin>
