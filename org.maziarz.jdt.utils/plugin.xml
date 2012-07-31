@@ -14,12 +14,12 @@
                   style="push">
             </command>
             <command
-                  commandId="org.maziarz.utils.ui.commands.openTerminal"
+                  commandId="org.maziarz.jdt.utils.commands.openTerminal"
                   label="Open terminal"
                   style="push">
             </command>
             <command
-                  commandId="org.maziarz.utils.ui.commands.openTerminal"
+                  commandId="org.maziarz.jdt.utils.commands.openTerminal"
                   label="Open with window manager"
                   style="push">
             </command>
