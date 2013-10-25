@@ -56,5 +56,19 @@
          </commandParameter>
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.maziarz.jdt.utils.preferences.OmutilsPreferencePage"
+            id="org.maziarz.jdt.utils.preferences.OmutilsPreferencePage"
+            name="Omutils Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.maziarz.jdt.utils.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

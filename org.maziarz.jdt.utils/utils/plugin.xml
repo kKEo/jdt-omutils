@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?before=additions">
+         <menu
+               label="Miscellaneous">
+            <command
+                  commandId="org.maziarz.utils.ui.commands.copyLocalPath"
+                  label="Copy to clipboard"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.maziarz.utils.ui.commands.openTerminal"
+                  label="Open terminal"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.maziarz.utils.ui.commands.openWindowManager"
+                  label="Open with window manager"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Wicket">
+            <command
+                  commandId="org.maziarz.utils.ui.commands.createMarkupFile"
+                  label="Create markup file"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.console.ConsoleView?before=additions">
+         <menu
+               label="Magic">
+            <command
+                  commandId="org.maziarz.utils.ui.commands.openInEditor"
+                  label="Open in editor"
+                  mode="FORCE_TEXT"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="toolbar:org.maziarz.utils.ui.toolbar"
+               label="My Toolbar">
+            <command
+                  commandId="org.maziarz.utils.ui.commands.openMarkup"
+                  icon="icons/sample.gif"
+                  label="Markup XX"
+                  style="pulldown"
+                  tooltip="Go to markup XX">
+            </command>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.maziarz.utils.ui.commands.openMarkup">
+         <command
+               commandId="org.maziarz.utils.ui.commands.openInEditor"
+               label="Open in editor"
+               style="push">
+         </command>
+         <command
+               commandId="org.maziarz.utils.ui.commands.openMarkup"
+               icon="icons/sample.gif"
+               label="Open markup"
+               style="push"
+               tooltip="Open markup">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?before=additions">
+         <command
+               commandId="org.maziarz.utils.ui.commands.resourcesSpy"
+               label="Toggle Resources Spy"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.CopyLocalPathHandler"
+            id="org.maziarz.utils.ui.commands.copyLocalPath"
+            name="Copy object full paths to clipboard">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.OpenContainerHandler"
+            id="org.maziarz.utils.ui.commands.openTerminal"
+            name="Open in terminal">
+         <commandParameter
+               id="org.maziarz.utils.ui.commands.terminal"
+               name="command"
+               optional="true"
+               values="org.maziarz.utils.ui.commands.TerminalCommandValues">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.OpenContainerHandler"
+            id="org.maziarz.utils.ui.commands.openWindowManager"
+            name="Open with window manager">
+         <commandParameter
+               id="org.maziarz.utils.ui.commands.manager"
+               name="command"
+               optional="true"
+               values="org.maziarz.utils.ui.commands.WindowManagersCommandValues">
+         </commandParameter>
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.PrepareTestCaseNameHandler"
+            id="org.maziarz.utils.ui.commands.getTestCaseName"
+            name="Get test case name ">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.OpenInEditor"
+            id="org.maziarz.utils.ui.commands.openInEditor"
+            name="Open in editor">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.WriteToTheConsoleHandler"
+            id="org.maziarz.utils.ui.commands.writeToTheConsole"
+            name="Write to the console">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.PrepareTestCaseHandler"
+            id="org.maziarz.utils.ui.commands.convertToTestCase"
+            name="Prepare test case">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.handlers.RunTestCasesHandler"
+            id="org.maziarz.utils.ui.commands.RunTestCase"
+            name="Run test case">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.wicket.handlers.OpenMarkupHandler"
+            id="org.maziarz.utils.ui.commands.openMarkup"
+            name="Open markup">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.wicket.handlers.CreateMarkupHandler"
+            id="org.maziarz.utils.ui.commands.createMarkupFile"
+            name="Create markup file">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.wicket.handlers.ToggleResourceAssistant"
+            id="org.maziarz.utils.ui.commands.resourcesSpy"
+            name="Toggle Resources Assistent">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.maziarz.utils.ui.commands.openTerminal"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+A">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.consoleLineTrackers">
+      <consoleLineTracker
+            class="org.maziarz.utils.ui.handlers.ConsoleLineTracker"
+            id="org.maziarz.utils.ui.consoleLineTracker"
+            processType="java">
+      </consoleLineTracker>
+   </extension>
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+      <target
+            id="org.eclipse.core.runtime.xml"
+            name="Module Chain">
+         <context
+               type="org.eclipse.ui.texteditor.ITextEditor">
+         </context>
+      </target>
+      <target
+            id="org.maziarz.utils.ui.target"
+            name="Test custom target">
+         <context
+               type="org.maziarz.utils.ui.editors.ModuleChainXMLEditor">
+         </context>
+      </target>
+   </extension>
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector
+            activate="true"
+            class="org.maziarz.utils.ui.ModuleDefintionHyperlinkDetector"
+            id="org.maziarz.utils.ui.moduleDefinitionClasses"
+            name="Module Definition Classes"
+            targetId="org.maziarz.utils.ui.target">
+      </hyperlinkDetector>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="org.maziarz.utils.ui.target"
+            name="MC Context"
+            parentId="org.eclipse.ui.textEditorScopeorg.eclipse.ui.textEditorScope">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.maziarz.utils.ui.actionSet"
+            label="Sample Action Set"
+            visible="true">
+         <action
+               class="org.maziarz.utils.ui.actions.SampleAction"
+               icon="icons/sample.gif"
+               id="org.maziarz.utils.ui.action1"
+               label="goto"
+               menubarPath="sampleMenu/sampleGroup"
+               pulldown="true"
+               state="false"
+               toolbarPath="sampleGroup"
+               tooltip="Go to">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         id="org.maziarz.utils.ui.resourceAssistentBuilder"
+         name="Follows changed resources"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="false">
+         <run
+               class="org.maziarz.utils.ui.IncrementalProjectBuilder">
+         </run>
+      </builder>
+   </extension>
+
+</plugin>

@@ -9,19 +9,24 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IParameter;
 import org.eclipse.core.commands.ParameterValuesException;
 import org.eclipse.core.commands.common.NotDefinedException;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.internal.runtime.Log;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.maziarz.jdt.utils.OmUtils;
 
 public class OpenContainerHandler extends AbstractHandler implements IHandler {
 
@@ -53,7 +58,8 @@ public class OpenContainerHandler extends AbstractHandler implements IHandler {
 		if (selectionItem == null) {
 			return null;
 		}
-		
+		OmUtils.getDefault().logInfo("Selected: " + selectionItem.getClass());
+
 		if (selectionItem instanceof IFile) {
 			IFile file = (IFile) selectionItem;
 			IPath basedir = file.getLocation().removeLastSegments(1);
