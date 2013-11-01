@@ -40,7 +40,7 @@ public class IncrementalProjectBuilder extends org.eclipse.core.resources.Increm
 
 			IResource resource = delta.getResource();
 
-			int flags = delta.getFlags();
+//			int flags = delta.getFlags();
 
 			int resourceDeltaKind = delta.getKind();
 			switch (resourceDeltaKind) {

@@ -13,7 +13,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.maziarz.jdt.utils.IncrementalProjectBuilder;
 import org.maziarz.jdt.utils.OmUtils;
-import org.maziarz.jdt.utils.OmutilsActivator;
 
 public class ToggleResourceAssistant extends AbstractHandler {
 

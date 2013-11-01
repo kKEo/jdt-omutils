@@ -66,7 +66,7 @@
             commandId="org.maziarz.utils.ui.commands.openMarkup"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M2+M3+S">
+            sequence="M2+M3+G">
       </key>
    </extension>
    

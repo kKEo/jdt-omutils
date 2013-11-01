@@ -33,7 +33,7 @@ public class OmUtils extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 
-		IPath stateLocation = getStateLocation();
+//		IPath stateLocation = getStateLocation();
 
 		// Use this path to store middle session data
 
