@@ -65,19 +65,24 @@ public class OpenMarkupHandler extends AbstractHandler implements IHandler {
 		IContainer fileContainer = file.getParent();
 		if (fileContainer instanceof IFolder) {
 			IFolder packageFolder = (IFolder)fileContainer;
-			String markupFileName = file.getName().replaceFirst(".java$", ".html");
-			IFile markupFile = packageFolder.getFile(markupFileName);
+			String correspondingFileName = null;
+			if (file.getName().endsWith("java")) {
+				correspondingFileName = file.getName().replaceFirst(".java$", ".html");
+			} else {
+				correspondingFileName = file.getName().replaceFirst(".html$", ".java");
+			}
+			IFile correspondingFile = packageFolder.getFile(correspondingFileName);
 			
-			if (markupFile.exists()){
-				openFileInEditor(markupFile);
+			if (correspondingFile.exists()){
+				openFileInEditor(correspondingFile);
 			} else {
 				MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-				mb.setMessage("File "+markupFile.getProjectRelativePath()+" does not exists.");
+				mb.setMessage("File "+correspondingFile.getProjectRelativePath()+" does not exists.");
 				mb.open();
 			}	
 		}
 	}
-
+	
 	private void openFileInEditor(IFile markupFile) {
 		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();	
 		try {

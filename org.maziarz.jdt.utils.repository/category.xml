@@ -3,5 +3,8 @@
    <feature url="features/org.maziarz.jdt.utils.feature_0.1.0.qualifier.jar" id="org.maziarz.jdt.utils.feature" version="0.1.0.qualifier">
       <category name="org.maziarz.jdt"/>
    </feature>
+   <feature url="features/org.maziarz.jdt.utils.wicket.feature_0.1.0.qualifier.jar" id="org.maziarz.jdt.utils.wicket.feature" version="0.1.0.qualifier">
+      <category name="org.maziarz.jdt"/>
+   </feature>
    <category-def name="org.maziarz.jdt" label="JDT-omutils"/>
 </site>

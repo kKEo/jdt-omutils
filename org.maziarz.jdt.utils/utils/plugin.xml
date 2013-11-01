@@ -206,7 +206,7 @@
       <context
             id="org.maziarz.utils.ui.target"
             name="MC Context"
-            parentId="org.eclipse.ui.textEditorScopeorg.eclipse.ui.textEditorScope">
+            parentId="org.eclipse.ui.textEditorScope">
       </context>
    </extension>
    <extension

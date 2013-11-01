@@ -6,8 +6,7 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer?before=additions">
-         <menu
-               label="System">
+         <menu label="System">
             <command
                   commandId="org.maziarz.jdt.utils.commands.copyLocalPath"
                   label="Copy full path"
@@ -24,7 +23,44 @@
                   style="push">
             </command>
          </menu>
+          <menu label="Wicket">
+            <command
+                  commandId="org.maziarz.utils.ui.commands.createMarkupFile"
+                  label="Create markup file"
+                  style="push">
+            </command>
+         </menu>
       </menuContribution>
+      
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="toolbar:org.maziarz.utils.ui.toolbar"
+               label="Wicket Toolbar">
+            <command
+                  id="org.maziarz.utils.ui.toolbar.wicket"
+                  commandId="org.maziarz.utils.ui.commands.openMarkup"
+                  icon="icons/openMarkup.gif"
+                  label="Open Markup"
+                  style="pulldown"
+                  tooltip="Go to markup file">
+            </command>
+         </toolbar>
+      </menuContribution>
+
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.maziarz.utils.ui.toolbar.wicket">
+	        <command
+	              commandId="org.maziarz.utils.ui.commands.createMarkupFile"
+	              label="Create Markup"
+	              style="push"
+	              tooltip="Create markup file">
+	        </command>
+       </menuContribution>
+
+      
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -55,7 +91,38 @@
                values="org.maziarz.utils.ui.commands.WindowManagersCommandValues">
          </commandParameter>
       </command>
+      
+      <command
+            defaultHandler="org.maziarz.utils.ui.wicket.handlers.OpenMarkupHandler"
+            id="org.maziarz.utils.ui.commands.openMarkup"
+            name="Open markup">
+      </command>
+      <command
+            defaultHandler="org.maziarz.utils.ui.wicket.handlers.CreateMarkupHandler"
+            id="org.maziarz.utils.ui.commands.createMarkupFile"
+            name="Create markup file">
+      </command>
    </extension>
+   
+    <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.maziarz.utils.ui.commands.openTerminal"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M2+M3+A">
+      </key>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.consoleLineTrackers">
+      <consoleLineTracker
+            class="org.maziarz.utils.ui.handlers.ConsoleLineTracker"
+            id="org.maziarz.utils.ui.consoleLineTracker"
+            processType="java">
+      </consoleLineTracker>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.preferencePages">
       <page

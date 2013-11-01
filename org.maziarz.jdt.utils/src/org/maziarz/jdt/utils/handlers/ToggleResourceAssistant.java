@@ -1,4 +1,4 @@
-package org.maziarz.utils.ui.wicket.handlers;
+package org.maziarz.jdt.utils.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
