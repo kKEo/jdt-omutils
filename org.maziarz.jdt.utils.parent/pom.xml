@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.maziarz</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1.qualifier</version>
 	<packaging>pom</packaging>
 
 	<prerequisites>
@@ -13,7 +13,7 @@
 	</prerequisites>
 
 	<properties>
-		<tycho-version>0.11.1</tycho-version>
+		<tycho-version>0.19.0</tycho-version>
 		<omutils-version>0.1.0</omutils-version>
 	</properties>
 	<repositories>
@@ -25,9 +25,6 @@
 			<!-- file URL for faster and offline builds -->
 			<!-- <url>file:/home/krma/Eclipses/PDTDevel</url> -->
 		</repository>
-		<!-- SWTbot is not part of the helios update site <repository> <id>swtbot</id> 
-			<layout>p2</layout> <url>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site/</url> 
-			</repository> -->
 	</repositories>
 
 	<dependencies>
@@ -45,13 +42,13 @@
 				</configuration> </plugin> -->
 			<plugin>
 				<!-- enable tycho build extension -->
-				<groupId>org.sonatype.tycho</groupId>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.tycho</groupId>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
@@ -72,16 +69,16 @@
 					</environments>
 				</configuration>
 			</plugin>
-			<!-- enable source bundle generation -->
+			<!-- enable source bundle generation 
 			<plugin>
-				<groupId>org.sonatype.tycho</groupId>
+				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>maven-osgi-source-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
-				<!-- executions>
+				<executions>
 					<execution>
 						<id>plugin-source</id>
 						<goals>
@@ -89,8 +86,13 @@
 						</goals>
 					</execution>
 				</executions>
-				 -->
 			</plugin>
+                        -->
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>versions-maven-plugin</artifactId>
+      <version>2.1</version>
+    </plugin>
 		</plugins>
 	</build>
 </project>
