@@ -19,9 +19,9 @@
 	<repositories>
 		<!-- configure p2 repository to resolve against -->
 		<repository>
-			<id>indigo</id>
+			<id>kepler</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/indigo</url>
+			<url>http://download.eclipse.org/releases/kepler</url>
 			<!-- file URL for faster and offline builds -->
 			<!-- <url>file:/home/krma/Eclipses/PDTDevel</url> -->
 		</repository>

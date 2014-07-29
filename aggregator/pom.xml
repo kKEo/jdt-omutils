@@ -14,6 +14,9 @@
     <module>../org.maziarz.jdt.utils.feature</module>
     <module>../org.maziarz.jdt.utils.wicket</module>
     <module>../org.maziarz.jdt.utils.wicket.feature</module>
+    <module>../org.maziarz.sqlipse</module>
+    <module>../org.maziarz.sqlipse.feature</module>
+
     <module>../org.maziarz.jdt.utils.repository</module>
     
 <!--    <module>../org.maziarz.yiiclipse.deployment</module>

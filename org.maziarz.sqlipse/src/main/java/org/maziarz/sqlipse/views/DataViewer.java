@@ -38,7 +38,7 @@ import org.maziarz.sqlipse.views.DataViewer.ViewContentProvider.Row;
 
 public class DataViewer extends ViewPart {
 
-	public static final String ID = "dateexplorer.views.DataViewer";
+	public static final String ID = "sqlipse.views.DataViewer";
 
 	private Action runSqlAction;
 	private Action action2;

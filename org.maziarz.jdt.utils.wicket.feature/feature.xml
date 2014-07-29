@@ -2,7 +2,7 @@
 <feature
       id="org.maziarz.jdt.utils.wicket.feature"
       label="JDT-wicket"
-      version="0.1.0.qualifier"
+      version="0.0.1.qualifier"
       provider-name="maziarz.org">
 
    <plugin

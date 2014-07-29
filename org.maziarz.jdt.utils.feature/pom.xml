@@ -12,7 +12,7 @@
   
   <groupId>org.maziarz</groupId>
   <artifactId>org.maziarz.jdt.utils.feature</artifactId>
-  <version>0.1.0.qualifier</version>
+  <version>0.0.1.qualifier</version>
   
   <packaging>eclipse-feature</packaging>
   
