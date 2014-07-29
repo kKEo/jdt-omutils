@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.maziarz.sqlipse.feature"
+      label="SQLipse"
+      version="0.0.1.qualifier"
+      provider-name="maziarz.org">
+
+   <plugin
+         id="sqlipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.1"
+         unpack="false"/>
+
+</feature>
