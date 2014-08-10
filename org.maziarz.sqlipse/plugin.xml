@@ -15,4 +15,38 @@
             id="org.maziarz.sqlipse.views.DataViewer">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="sqlipse.context"
+            name="SQLipse Context"
+            parentId="org.eclipse.ui.contexts.window">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <scheme
+            id="sqlipse.scheme"
+            name="SQLipse Binding Schema">
+      </scheme>
+      <key
+            commandId="sqlipse.commands.runQuery"
+            contextId="sqlipse.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+CR">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="sqlipse.category"
+            defaultHandler="org.maziarz.sqlipse.RunQuery"
+            id="sqlipse.commands.runQuery"
+            name="Run Query">
+      </command>
+      <category
+            id="sqlipse.category"
+            name="SQLipse Category">
+      </category>
+   </extension>
 </plugin>

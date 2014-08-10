@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.maziarz.sqlipse.JdbcConnection;
 import org.maziarz.sqlipse.views.DataViewer.ViewContentProvider.Row;
@@ -137,8 +138,10 @@ public class DataViewer extends ViewPart {
 		scratchpad.setAction(runSqlAction);
 
 		sash.setWeights(new int[] { 1, 3 });
+		
+		((IContextService)getSite().getService(IContextService.class)).activateContext("sqlipse.context");
 	}
-
+	
 	private TableViewer addTabItem(CTabFolder folder, ResultSet rs) throws SQLException {
 		CTabItem item = new CTabItem(folder, SWT.NONE);
 		item.setText("Results");
