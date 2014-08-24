@@ -1,16 +1,17 @@
 package org.maziarz.sqlipse.views;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -18,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -28,24 +30,64 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
+import org.maziarz.sqlipse.Activator;
 import org.maziarz.sqlipse.JdbcConnection;
+import org.maziarz.sqlipse.handlers.ConnectionSupplier;
+import org.maziarz.sqlipse.handlers.ResultSetProcessor;
 import org.maziarz.sqlipse.views.DataViewer.ViewContentProvider.Row;
 
 public class DataViewer extends ViewPart {
 
 	public static final String ID = "sqlipse.views.DataViewer";
 
-	private Action runSqlAction;
-	private Action action2;
-
 	private SqlScratchpad scratchpad;
 	private CTabFolder folder;
+
+	private ComboViewer connections;
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getAdapter(Class adapter) {
+		
+		if (ConnectionSupplier.class.equals(adapter)) {
+			ISelection selection = connections.getSelection();
+			if (selection instanceof StructuredSelection) {
+				if (((StructuredSelection) selection).getFirstElement() instanceof JdbcConnection) {
+					return new ConnectionSupplier() {
+						@Override
+						public JdbcConnection getConnection() {
+							return (JdbcConnection)((StructuredSelection) selection).getFirstElement();
+						}
+					};
+				}
+			}
+		}
+		
+		if (ResultSetProcessor.class.equals(adapter)) {
+			return new ResultSetProcessor() {
+				
+				@Override
+				public void process(ResultSet rs) {
+					try {
+						addTabItem(folder, rs);
+					} catch (SQLException e) {
+						new RuntimeException(""+e, e);
+					}
+				}
+			};
+		}
+		
+		return super.getAdapter(adapter);
+	}
+	
 
 	class ViewContentProvider implements IStructuredContentProvider {
 
@@ -123,23 +165,33 @@ public class DataViewer extends ViewPart {
 	}
 
 	public void createPartControl(Composite parent) {
-
+		
 		SashForm sash = new SashForm(parent, SWT.NONE);
+		
+		Composite c = new Composite(sash, SWT.NONE);
+		GridLayout layout = new GridLayout(3, false);
+		c.setLayout(layout);
+		Label l = new Label(c, SWT.NONE);
+		l.setText("Connection: ");
+		connections = new ComboViewer(c);
+		connections.setContentProvider(ArrayContentProvider.getInstance());
+		connections.setInput(Activator.getDefault().getConfiguration().getConnections());
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(connections.getControl());
+		
+		Button b = new Button(c, SWT.PUSH);
+		b.setText("Run selected");
 
-		scratchpad = new SqlScratchpad(sash, SWT.BORDER);
-
+		scratchpad = new SqlScratchpad(c, SWT.BORDER);
+		GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(scratchpad);
+		
 		folder = new CTabFolder(sash, SWT.BORDER);
-
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(sash, "dataexplorer.viewer");
-
-		makeActions();
 		contributeToActionBars();
-
-		scratchpad.setAction(runSqlAction);
 
 		sash.setWeights(new int[] { 1, 3 });
 		
 		((IContextService)getSite().getService(IContextService.class)).activateContext("sqlipse.context");
+		getSite().setSelectionProvider(scratchpad.getSelectionProvider());
 	}
 	
 	private TableViewer addTabItem(CTabFolder folder, ResultSet rs) throws SQLException {
@@ -191,67 +243,14 @@ public class DataViewer extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(runSqlAction);
 		manager.add(new Separator());
-		manager.add(action2);
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(runSqlAction);
-		manager.add(action2);
-	}
-
-	private void makeActions() {
-
-		runSqlAction = new Action() {
-			public void run() {
-				String query = scratchpad.getQuery();
-				System.out.println("Query: " + query);
-				if (query.isEmpty()) {
-					return;
-				}
-				Connection c = null;
-				try {
-					c = JdbcConnection.getH2Test().connect();
-
-					if (query.trim().toUpperCase().startsWith("SELECT")) {
-						ResultSet rs = c.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)
-								.executeQuery();
-						addTabItem(folder, rs);
-					} else {
-						int i = c.prepareStatement(query).executeUpdate();
-						System.out.println("Result: " + i);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						c.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		};
-
-		runSqlAction.setText("Connection");
-		runSqlAction.setToolTipText("Action 1 tooltip");
-		runSqlAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
-
-		action2 = new Action() {
-			public void run() {
-
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_SYNCED));
-
 	}
 
 	public void setFocus() {
 		scratchpad.setFocus();
 	}
+	
 }

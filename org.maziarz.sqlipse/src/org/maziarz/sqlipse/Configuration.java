@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,27 +16,53 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "configuration")
 public class Configuration {
 
-	@XmlElementWrapper(name = "entries")
-	@XmlElement(name = "entry")
-	private List<ConfigurationEntry> enties = new ArrayList<ConfigurationEntry>();
+	@XmlAttribute
+	private String version = "1.0";
+	
+	@XmlElementWrapper(name = "drivers")
+	@XmlElement(name = "driver")
+	private List<JdbcDriver> drivers = new ArrayList<JdbcDriver>();
 
-	public void load() {
-		Activator.getDefault().getStateLocation().append("config.xml").toFile();
+	@XmlElementWrapper(name = "connections")
+	@XmlElement(name = "connection")
+	private List<JdbcConnection> connections = new ArrayList<JdbcConnection>();
+
+	public List<JdbcDriver> getDrivers() {
+		return drivers;
 	}
-
-	public static <T> T read(InputStream is, Class<T> clazz) throws JAXBException {
-		JAXBContext context = JAXBContext.newInstance(clazz);
-		@SuppressWarnings("unchecked")
-		T result = (T) context.createUnmarshaller().unmarshal(is);
+	
+	public List<JdbcConnection> getConnections() {
+		return connections;
+	}
+	
+	public void addDriver(JdbcDriver driver) {
+		drivers.add(driver);
+	}
+	
+	public void addConnection(JdbcConnection connection) {
+		connections.add(connection);
+	}
+	
+	public JdbcConnection getConnectionByName(String connectionName) {
+		for (JdbcConnection connection : connections) {
+			if (connection.getName().equals(connectionName)) {
+				return connection;
+			}
+		}
+		return null;
+	}
+	
+	public static Configuration read(InputStream is) throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(Configuration.class);
+		Configuration result = (Configuration) context.createUnmarshaller().unmarshal(is);
 		return result;
 	}
 
-	public static <T> void write(T o, OutputStream os, Class<T> clazz) throws JAXBException {
-		JAXBContext context = JAXBContext.newInstance(clazz);
+	public static void write(Configuration o, OutputStream os) throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(Configuration.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		m.marshal(o, os);
-
 	}
 
 }

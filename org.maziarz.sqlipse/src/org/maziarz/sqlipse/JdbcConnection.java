@@ -6,7 +6,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,13 +13,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlIDREF;
+
 public class JdbcConnection {
 
+	@XmlAttribute
+	private String name;
+
+	@XmlAttribute
 	private String connectionUrl;
-	private String driverClassName;
+
+	@XmlAttribute
 	private String username;
+
+	@XmlAttribute
 	private String password;
-	private String jarList;
+
+	@XmlIDREF
+	@XmlAttribute
+	private JdbcDriver driver;
 
 	private Connection connection;
 
@@ -70,30 +82,36 @@ public class JdbcConnection {
 
 	}
 
-	public JdbcConnection(String jarList, String driver, String conn, String user, String pass) {
+	@SuppressWarnings("unused")
+	private JdbcConnection() {
+	}
+
+	public JdbcConnection(JdbcDriver driver, String conn, String user, String pass) {
 		this.connectionUrl = conn;
-		this.driverClassName = driver;
+		this.driver = driver;
 		this.username = user;
 		this.password = pass;
-		this.jarList = jarList;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public Connection connect() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
-		ClassLoader classLoader = ClassLoaderCache.getInstance().get(jarList);
+		ClassLoader classLoader = ClassLoaderCache.getInstance().get(driver.getJars());
 		connection = createConnection(classLoader);
 
 		return connection;
 	}
 
-	private Connection createConnection(ClassLoader cl) throws SQLException, InstantiationException, IllegalAccessException,
-			ClassNotFoundException {
+	private Connection createConnection(ClassLoader cl) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
 		Properties connectionProps = new Properties();
 		connectionProps.setProperty("user", username);
 		connectionProps.setProperty("password", password);
 
-		Driver jdbcDriver = (Driver) cl.loadClass(driverClassName).newInstance();
+		Driver jdbcDriver = (Driver) cl.loadClass(driver.getDriver()).newInstance();
 		return jdbcDriver.connect(connectionUrl, connectionProps);
 
 	}
@@ -107,56 +125,8 @@ public class JdbcConnection {
 		}
 	}
 
-	public static JdbcConnection getH2Test() {
-		return new JdbcConnection("/home/krma/Downloads/Java/JDBCDrivers/h2-1.3.153.jar", "org.h2.Driver", "jdbc:h2:~/test2",
-				"aa", "");
+	@Override
+	public String toString() {
+		return name + "(" + connectionUrl + ")";
 	}
-
-	public static void main(String[] args) {
-
-		{
-
-			JdbcConnection jdbcConnection = getH2Test();
-			Connection c = null;
-			try {
-				c = jdbcConnection.connect();
-				ResultSet rs = c.prepareStatement("select * from INFORMATION_SCHEMA.TABLES").executeQuery();
-				rs.first();
-				System.out.println(rs.getString(1));
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
-
-		{
-			JdbcConnection jdbcConnection = getH2Test();
-			Connection c = null;
-			try {
-				c = jdbcConnection.connect();
-				ResultSet rs = c.prepareStatement("select count(1) from user_tables", ResultSet.TYPE_SCROLL_INSENSITIVE,
-						ResultSet.CONCUR_UPDATABLE).executeQuery();
-				rs.first();
-
-				System.out.println(rs.getString(1));
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
-
-	}
-
 }

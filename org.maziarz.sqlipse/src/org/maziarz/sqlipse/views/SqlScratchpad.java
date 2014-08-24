@@ -9,6 +9,7 @@ import org.eclipse.jface.text.TextEvent;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -41,7 +42,6 @@ public class SqlScratchpad extends Composite {
 		text.setEditable(true);
 		text.setDocument(new Document());
 		text.addTextListener(new ITextListener() {
-
 			@Override
 			public void textChanged(TextEvent event) {
 				long l = event.getDocumentEvent().getModificationStamp();
@@ -49,7 +49,6 @@ public class SqlScratchpad extends Composite {
 					DocumentUndoManagerRegistry.getDocumentUndoManager(text.getDocument()).commit();
 				}
 			}
-
 		});
 
 		text.getTextWidget().addKeyListener(new KeyAdapter() {
@@ -93,13 +92,16 @@ public class SqlScratchpad extends Composite {
 		try {
 			lineOffset = text.getDocument().getLineInformationOfOffset(offset).getOffset();
 			int lineLength = text.getDocument().getLineInformationOfOffset(offset).getLength();
-
 			return text.getDocument().get(lineOffset, lineLength);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
 
 		return "";
+	}
+
+	public ISelectionProvider getSelectionProvider() {
+		return text;
 	}
 
 }

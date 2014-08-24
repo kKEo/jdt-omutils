@@ -40,7 +40,7 @@
          point="org.eclipse.ui.commands">
       <command
             categoryId="sqlipse.category"
-            defaultHandler="org.maziarz.sqlipse.RunQuery"
+            defaultHandler="org.maziarz.sqlipse.handlers.RunQueryHandler"
             id="sqlipse.commands.runQuery"
             name="Run Query">
       </command>
@@ -48,5 +48,18 @@
             id="sqlipse.category"
             name="SQLipse Category">
       </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.maziarz.sqlipse.views.DataViewer">
+         <command
+               commandId="sqlipse.commands.runQuery"
+               icon="icons/sample.gif"
+               label="Run Query"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
 </plugin>
