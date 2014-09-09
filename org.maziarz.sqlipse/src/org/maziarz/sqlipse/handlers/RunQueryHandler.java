@@ -32,9 +32,7 @@ public class RunQueryHandler extends AbstractHandler implements IHandler {
 			TextSelection currentSelection2 = (TextSelection) currentSelection;
 
 			if (currentSelection2.isEmpty()) {
-
 				System.out.println("Startline: " + currentSelection2.getStartLine());
-
 			}
 
 			String query = currentSelection2.getText();
@@ -52,7 +50,7 @@ public class RunQueryHandler extends AbstractHandler implements IHandler {
 					if ("SQLiteJDBC".equals(metaData.getDriverName())) {
 						rs = c.prepareStatement(query).executeQuery();
 					} else {
-						rs = c.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery();
+						rs = c.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery();
 					}
 					rsp.process(rs);
 				} else {

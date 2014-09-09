@@ -3,16 +3,16 @@ Bundle-ManifestVersion: 2
 Bundle-Name: sqlipse
 Bundle-SymbolicName: sqlipse;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: org.maziarz.sqlipse.Activator
-Require-Bundle: org.eclipse.ui,
+Bundle-Activator: org.maziarz.sqlipse.SqlipsePlugin
+Require-Bundle: org.eclipse.core.commands,
  org.eclipse.core.runtime,
- org.eclipse.jface.text,
  org.eclipse.equinox.registry,
- org.eclipse.jdt.ui,
+ org.eclipse.jface.text,
+ org.eclipse.ui,
  org.eclipse.ui.editors,
- org.eclipse.core.commands,
+ org.eclipse.ui.forms,
  org.eclipse.ui.workbench,
- org.junit
+ org.junit;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

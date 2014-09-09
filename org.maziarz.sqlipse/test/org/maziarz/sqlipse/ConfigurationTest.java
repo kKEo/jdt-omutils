@@ -15,12 +15,12 @@ public class ConfigurationTest {
 	public void configuration() throws JAXBException {
 
 		Configuration c = new Configuration();
-		c.addDriver(new JdbcDriver("jars", "org.driver.Driver"));
-		JdbcDriver driver = new JdbcDriver("jars2", "org.driver.Driver2");
+		c.addDriver(new JdbcDriver("d1", "jars", "org.driver.Driver"));
+		JdbcDriver driver = new JdbcDriver("d2", "jars2", "org.driver.Driver2");
 		c.addDriver(driver);
-		
+
 		c.addConnection(new JdbcConnection(driver, "jdbc:h2:mem", "", ""));
-		
+
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		Configuration.write(c, os);
 

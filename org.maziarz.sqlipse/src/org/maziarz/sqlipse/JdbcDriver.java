@@ -1,7 +1,5 @@
 package org.maziarz.sqlipse;
 
-import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
@@ -9,8 +7,8 @@ import javax.xml.bind.annotation.XmlID;
 public class JdbcDriver {
 	
 	@XmlID
-	@XmlAttribute
-	private String id = UUID.randomUUID().toString();
+	@XmlElement
+	private String name;
 	
 	@XmlElement
 	private String jars;
@@ -22,11 +20,16 @@ public class JdbcDriver {
 	private JdbcDriver() {
 	}
 	
-	public JdbcDriver(String jars, String driver) {
+	public JdbcDriver(String name, String jars, String driver) {
+		this.name = name;
 		this.jars = jars;
 		this.driver = driver;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	public String getDriver() {
 		return driver;
 	}
