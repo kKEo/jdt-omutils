@@ -12,13 +12,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-public class Activator extends AbstractUIPlugin {
+public class SqlipsePlugin extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "sqlipse";
 
-	private static Activator plugin;
+	private static SqlipsePlugin plugin;
 
-	public Activator() {
+	public SqlipsePlugin() {
 	}
 
 	public void start(BundleContext context) throws Exception {
@@ -31,7 +31,7 @@ public class Activator extends AbstractUIPlugin {
 		super.stop(context);
 	}
 
-	public static Activator getDefault() {
+	public static SqlipsePlugin getDefault() {
 		return plugin;
 	}
 
@@ -40,8 +40,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	private File getConfigurationFile() {
-		File file = Activator.getDefault().getStateLocation().append("config.xml").toFile();
-		Activator.getDefault().getLog().log(new Status(Status.INFO, PLUGIN_ID, "Config file: "+file.getAbsolutePath()));
+		File file = SqlipsePlugin.getDefault().getStateLocation().append("config.xml").toFile();
+		SqlipsePlugin.getDefault().getLog().log(new Status(Status.INFO, PLUGIN_ID, "Config file: "+file.getAbsolutePath()));
 		return file;
 	}
 

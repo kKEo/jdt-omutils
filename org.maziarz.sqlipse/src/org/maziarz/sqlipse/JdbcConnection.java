@@ -96,6 +96,22 @@ public class JdbcConnection {
 	public String getName() {
 		return name;
 	}
+	
+	public String getConnectionUrl() {
+		return connectionUrl;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public JdbcDriver getDriver() {
+		return driver;
+	}
 
 	public Connection connect() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 
@@ -127,6 +143,6 @@ public class JdbcConnection {
 
 	@Override
 	public String toString() {
-		return name + "(" + connectionUrl + ")";
+		return name ;//+ "(" + connectionUrl + ")";
 	}
 }

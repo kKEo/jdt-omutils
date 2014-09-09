@@ -11,7 +11,7 @@
             name="SQLipse"
             icon="icons/sample.gif"
             category="sqlipse"
-            class="org.maziarz.sqlipse.views.DataViewer"
+            class="org.maziarz.sqlipse.views.DataViewPart"
             id="org.maziarz.sqlipse.views.DataViewer">
       </view>
    </extension>
@@ -38,16 +38,28 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
+      <category
+            id="sqlipse.category"
+            name="SQLipse Category">
+      </category>
       <command
             categoryId="sqlipse.category"
             defaultHandler="org.maziarz.sqlipse.handlers.RunQueryHandler"
             id="sqlipse.commands.runQuery"
             name="Run Query">
       </command>
-      <category
-            id="sqlipse.category"
-            name="SQLipse Category">
-      </category>
+      <command
+            categoryId="sqlipse.category"
+            defaultHandler="org.maziarz.sqlipse.handlers.ConfigureConnectionsHandler"
+            id="sqlipse.commands.configureConnections"
+            name="Configure Connections">
+      </command>
+      <command
+            categoryId="sqlipse.category"
+            defaultHandler="org.maziarz.sqlipse.handlers.ConfigureDriversHandler"
+            id="sqlipse.commands.configureDrivers"
+            name="Configure Drivers">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

@@ -6,6 +6,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -28,23 +34,25 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
-import org.maziarz.sqlipse.Activator;
+import org.maziarz.sqlipse.SqlipsePlugin;
 import org.maziarz.sqlipse.JdbcConnection;
 import org.maziarz.sqlipse.handlers.ConnectionSupplier;
 import org.maziarz.sqlipse.handlers.ResultSetProcessor;
-import org.maziarz.sqlipse.views.DataViewer.ViewContentProvider.Row;
+import org.maziarz.sqlipse.views.DataViewPart.ViewContentProvider.Row;
 
-public class DataViewer extends ViewPart {
+public class DataViewPart extends ViewPart {
 
 	public static final String ID = "sqlipse.views.DataViewer";
 
@@ -115,7 +123,7 @@ public class DataViewer extends ViewPart {
 
 			if (parent instanceof ResultSet) {
 				ResultSet rs = (ResultSet) parent;
-				List<Row> rows = new ArrayList<DataViewer.ViewContentProvider.Row>();
+				List<Row> rows = new ArrayList<DataViewPart.ViewContentProvider.Row>();
 
 				try {
 					ResultSetMetaData meta = rs.getMetaData();
@@ -161,7 +169,7 @@ public class DataViewer extends ViewPart {
 	class NameSorter extends ViewerSorter {
 	}
 
-	public DataViewer() {
+	public DataViewPart() {
 	}
 
 	public void createPartControl(Composite parent) {
@@ -171,15 +179,31 @@ public class DataViewer extends ViewPart {
 		Composite c = new Composite(sash, SWT.NONE);
 		GridLayout layout = new GridLayout(3, false);
 		c.setLayout(layout);
-		Label l = new Label(c, SWT.NONE);
-		l.setText("Connection: ");
+		
+		Button b = new Button(c, SWT.NONE);
+		b.setText("(+)");
+		b.setToolTipText("Configure connections");
+		b.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseUp(MouseEvent e) {
+				ICommandService commandService = (ICommandService) DataViewPart.this.getSite().getService(ICommandService.class);
+				Command c = commandService.getCommand("sqlipse.commands.configureConnections");
+				try {
+					c.executeWithChecks(new ExecutionEvent());
+				} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e1) {
+					throw new RuntimeException(e1);
+				}
+			}
+		});
+		
 		connections = new ComboViewer(c);
 		connections.setContentProvider(ArrayContentProvider.getInstance());
-		connections.setInput(Activator.getDefault().getConfiguration().getConnections());
+		connections.setInput(SqlipsePlugin.getDefault().getConfiguration().getConnections());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(connections.getControl());
 		
-		Button b = new Button(c, SWT.PUSH);
-		b.setText("Run selected");
+		Button bRun = new Button(c, SWT.PUSH);
+		bRun.setText("Run");
+		bRun.setToolTipText("Run selected query");
 
 		scratchpad = new SqlScratchpad(c, SWT.BORDER);
 		GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(scratchpad);
