@@ -33,7 +33,7 @@ public class ConnectionsMasterDetailBlock extends MasterDetailsBlock {
 	}
 
 	@Override
-	protected void createMasterPart(IManagedForm managedForm, Composite parent) {
+	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
 
 		FormToolkit tk = managedForm.getToolkit();
 

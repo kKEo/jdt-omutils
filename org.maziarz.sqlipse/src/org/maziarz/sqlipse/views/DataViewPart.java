@@ -66,7 +66,7 @@ public class DataViewPart extends ViewPart {
 	public Object getAdapter(Class adapter) {
 		
 		if (ConnectionSupplier.class.equals(adapter)) {
-			ISelection selection = connections.getSelection();
+			final ISelection selection = connections.getSelection();
 			if (selection instanceof StructuredSelection) {
 				if (((StructuredSelection) selection).getFirstElement() instanceof JdbcConnection) {
 					return new ConnectionSupplier() {
