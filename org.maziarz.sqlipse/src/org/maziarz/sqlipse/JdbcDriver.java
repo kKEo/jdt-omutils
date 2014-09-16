@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlID;
 public class JdbcDriver {
 	
 	@XmlID
-	@XmlElement
+	@XmlAttribute
 	private String name;
 	
 	@XmlElement
@@ -30,7 +30,7 @@ public class JdbcDriver {
 		return name;
 	}
 	
-	public String getDriver() {
+	public String getDriverClass() {
 		return driver;
 	}
 	

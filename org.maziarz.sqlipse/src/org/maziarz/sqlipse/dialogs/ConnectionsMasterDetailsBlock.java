@@ -11,7 +11,10 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
@@ -21,10 +24,13 @@ import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.maziarz.sqlipse.Configuration;
 import org.maziarz.sqlipse.JdbcConnection;
 import org.maziarz.sqlipse.SqlipsePlugin;
 
-public class ConnectionsMasterDetailBlock extends MasterDetailsBlock {
+public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
+
+	private TreeViewer tv;
 
 	@Override
 	public void createContent(IManagedForm managedForm) {
@@ -50,14 +56,11 @@ public class ConnectionsMasterDetailBlock extends MasterDetailsBlock {
 		Tree t = tk.createTree(c, SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(t);
 
-		tk.createButton(c, "Add connection", SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER);
-
 		section.setClient(c);
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 
-		TreeViewer tv = new TreeViewer(t);
+		tv = new TreeViewer(t);
 		tv.setLabelProvider(new LabelProvider());
 		tv.setContentProvider(new ITreeContentProvider() {
 
@@ -117,13 +120,33 @@ public class ConnectionsMasterDetailBlock extends MasterDetailsBlock {
 				tv.setSelection(new StructuredSelection(connections.get(0)));
 			}
 		}
+		
+		addConnectionButton(tk, c);
+		
+	}
 
+	private void addConnectionButton(FormToolkit tk, Composite c) {
+		Button b = tk.createButton(c, "Add connection", SWT.PUSH);
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER);
+		
+		b.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Configuration configuration = SqlipsePlugin.getDefault().getConfiguration();
+				JdbcConnection connection = new JdbcConnection(null, "new connection", "", "", "");
+				configuration.addConnection(connection);
+				tv.setInput(configuration.getConnections().toArray());
+				tv.refresh();
+				tv.setSelection(new StructuredSelection(connection));
+			}
+		});
+		
 	}
 
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 
-		detailsPart.registerPage(JdbcConnection.class, new JdbcConnectionDetailsPage());
+		detailsPart.registerPage(JdbcConnection.class, new ConnectionDetailsPage());
 
 	}
 

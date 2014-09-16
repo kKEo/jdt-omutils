@@ -86,7 +86,8 @@ public class JdbcConnection {
 	private JdbcConnection() {
 	}
 
-	public JdbcConnection(JdbcDriver driver, String conn, String user, String pass) {
+	public JdbcConnection(JdbcDriver driver, String name, String conn, String user, String pass) {
+		this.name = name;
 		this.connectionUrl = conn;
 		this.driver = driver;
 		this.username = user;
@@ -114,10 +115,8 @@ public class JdbcConnection {
 	}
 
 	public Connection connect() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-
 		ClassLoader classLoader = ClassLoaderCache.getInstance().get(driver.getJars());
 		connection = createConnection(classLoader);
-
 		return connection;
 	}
 
@@ -127,7 +126,7 @@ public class JdbcConnection {
 		connectionProps.setProperty("user", username);
 		connectionProps.setProperty("password", password);
 
-		Driver jdbcDriver = (Driver) cl.loadClass(driver.getDriver()).newInstance();
+		Driver jdbcDriver = (Driver) cl.loadClass(driver.getDriverClass()).newInstance();
 		return jdbcDriver.connect(connectionUrl, connectionProps);
 
 	}

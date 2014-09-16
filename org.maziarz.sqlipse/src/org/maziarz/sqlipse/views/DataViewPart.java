@@ -6,12 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.NotEnabledException;
-import org.eclipse.core.commands.NotHandledException;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -43,11 +37,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
-import org.maziarz.sqlipse.SqlipsePlugin;
 import org.maziarz.sqlipse.JdbcConnection;
+import org.maziarz.sqlipse.SqlipsePlugin;
+import org.maziarz.sqlipse.Utils;
 import org.maziarz.sqlipse.handlers.ConnectionSupplier;
 import org.maziarz.sqlipse.handlers.ResultSetProcessor;
 import org.maziarz.sqlipse.views.DataViewPart.ViewContentProvider.Row;
@@ -186,13 +180,7 @@ public class DataViewPart extends ViewPart {
 		b.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseUp(MouseEvent e) {
-				ICommandService commandService = (ICommandService) DataViewPart.this.getSite().getService(ICommandService.class);
-				Command c = commandService.getCommand("sqlipse.commands.configureConnections");
-				try {
-					c.executeWithChecks(new ExecutionEvent());
-				} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e1) {
-					throw new RuntimeException(e1);
-				}
+				Utils.executeCommand(DataViewPart.this.getSite(), "sqlipse.commands.configureConnections");
 			}
 		});
 		

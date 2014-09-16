@@ -19,7 +19,7 @@ public class ConfigurationTest {
 		JdbcDriver driver = new JdbcDriver("d2", "jars2", "org.driver.Driver2");
 		c.addDriver(driver);
 
-		c.addConnection(new JdbcConnection(driver, "jdbc:h2:mem", "", ""));
+		c.addConnection(new JdbcConnection(driver, "name", "jdbc:h2:mem", "", ""));
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		Configuration.write(c, os);
