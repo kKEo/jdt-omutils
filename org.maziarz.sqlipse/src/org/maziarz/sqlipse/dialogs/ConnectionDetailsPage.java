@@ -1,9 +1,14 @@
 package org.maziarz.sqlipse.dialogs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -19,19 +24,19 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.maziarz.sqlipse.JdbcConnection;
+import org.maziarz.sqlipse.JdbcDriver;
+import org.maziarz.sqlipse.SqlipsePlugin;
 import org.maziarz.sqlipse.Utils;
 
 final class ConnectionDetailsPage implements IDetailsPage {
 	private FormToolkit tk;
 
 	private Text tName;
+	private Combo cDriverName;
 	private Text tConnectionUrl;
 	private Text tUsername;
 	private Text tPassword;
 
-	private Combo cDriverName;
-	private Text tJars;
-	private Combo cDriverClass;
 
 	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
@@ -47,12 +52,8 @@ final class ConnectionDetailsPage implements IDetailsPage {
 
 				if (jdbcConnection.getDriver() != null) {
 					cDriverName.setText(jdbcConnection.getDriver().getName());
-					tJars.setText(jdbcConnection.getDriver().getJars());
-					cDriverClass.setText(jdbcConnection.getDriver().getDriverClass());
 				} else {
 					cDriverName.setText("");
-					tJars.setText("");
-					cDriverClass.setText("");
 				}
 			}
 		}
@@ -81,6 +82,36 @@ final class ConnectionDetailsPage implements IDetailsPage {
 		tName = tk.createText(container, "");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(tName);
 
+		tk.createLabel(container, "Driver name: ");
+		Composite driverComposite = tk.createComposite(container);
+		driverComposite.setLayout(new GridLayout(2, false));
+
+		cDriverName = new Combo(driverComposite, SWT.NONE);
+		cDriverName.setBackground(tk.getColors().getBackground());
+		cDriverName.setForeground(tk.getColors().getForeground());
+		
+		cDriverName.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				List<String> driverNames = new ArrayList<String>();
+				for ( JdbcDriver d :SqlipsePlugin.getDefault().getConfiguration().getDrivers() ){
+					driverNames.add(d.getName());
+				}
+				cDriverName.setItems(driverNames.toArray(new String[0]));
+			}
+		});
+		
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(cDriverName);
+
+		Hyperlink addNew = tk.createHyperlink(driverComposite, "Add new", SWT.NONE);
+		addNew.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Utils.executeCommand(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite(), "sqlipse.commands.configureDrivers");
+			}
+		});
+		
+		
 		tk.createLabel(container, "ConnectionUrl: ");
 		tConnectionUrl = tk.createText(container, "");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(tConnectionUrl);
@@ -96,8 +127,7 @@ final class ConnectionDetailsPage implements IDetailsPage {
 		section.setClient(container);
 
 		Section s = tk.createSection(container, Section.TWISTIE | Section.TITLE_BAR);
-		s.setText("Driver Details");
-		s.setDescription("Required Jars on classpath");
+		s.setText("Options");
 		s.marginHeight = 3;
 		s.marginWidth = 0;
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(s);
@@ -105,34 +135,7 @@ final class ConnectionDetailsPage implements IDetailsPage {
 		Composite c = tk.createComposite(s, SWT.WRAP);
 		c.setLayout(new GridLayout(3, false));
 
-		tk.createLabel(c, "Driver name: ");
-
-		cDriverName = new Combo(c, SWT.NONE);
-		cDriverName.setBackground(tk.getColors().getBackground());
-		cDriverName.setForeground(tk.getColors().getForeground());
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(cDriverName);
-
-		Hyperlink addNew = tk.createHyperlink(c, "Add new", SWT.NONE);
-		addNew.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseUp(MouseEvent e) {
-				Utils.executeCommand(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite(), "sqlipse.commands.configureDrivers");
-			}
-		});
-
-		tk.createLabel(c, "Jars: ");
-		tJars = tk.createText(c, "", SWT.MULTI);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(tJars);
-		tk.createHyperlink(c, "Browse", SWT.NONE);
-
-		tk.createLabel(c, "Driver class: ");
-		cDriverClass = new Combo(c, SWT.NONE);
-		cDriverClass.setBackground(tk.getColors().getBackground());
-		cDriverClass.setForeground(tk.getColors().getForeground());
-
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(cDriverClass);
-
-		s.setExpanded(true);
+		s.setExpanded(false);
 
 		s.setClient(c);
 	}

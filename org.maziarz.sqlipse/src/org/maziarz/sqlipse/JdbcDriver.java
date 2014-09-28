@@ -37,4 +37,9 @@ public class JdbcDriver {
 	public String getJars() {
 		return jars;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

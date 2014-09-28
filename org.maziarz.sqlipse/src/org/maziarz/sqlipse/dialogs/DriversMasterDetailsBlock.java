@@ -20,21 +20,21 @@ import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.maziarz.sqlipse.JdbcConnection;
 import org.maziarz.sqlipse.JdbcDriver;
 import org.maziarz.sqlipse.SqlipsePlugin;
 
 final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	
-	@Override
-	protected void registerPages(DetailsPart detailsPart) {
-		detailsPart.registerPage(JdbcDriver.class, new DriverDetailsPage());
-	}
+	private TreeViewer tv;
 
+	
 	@Override
-	protected void createToolBarActions(IManagedForm managedForm) {
-
+	public void createContent(IManagedForm managedForm) {
+		super.createContent(managedForm);
+		sashForm.setWeights(new int[] { 1, 2 });
 	}
+	
+
 
 	@Override
 	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
@@ -52,13 +52,13 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		c.setLayout(new FillLayout());
 		tk.paintBordersFor(c);
 
-		Tree t = tk.createTree(c, SWT.BORDER);
+		Tree tree = tk.createTree(c, SWT.BORDER);
 
 		section.setClient(c);
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 
-		TreeViewer tv = new TreeViewer(t);
+		tv = new TreeViewer(tree);
 		tv.setLabelProvider(new LabelProvider());
 		tv.setContentProvider(new ITreeContentProvider() {
 
@@ -103,14 +103,18 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		});
 
 		tv.addSelectionChangedListener(new ISelectionChangedListener() {
-
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(spart, event.getSelection());
 			}
-
 		});
 
+	}
+	
+	@Override
+	protected void registerPages(DetailsPart detailsPart) {
+		detailsPart.registerPage(JdbcDriver.class, new DriverDetailsPage());
+		
 		if (PlatformUI.isWorkbenchRunning()) {
 			List<JdbcDriver> connections = SqlipsePlugin.getDefault().getConfiguration().getDrivers();
 			tv.setInput(connections.toArray());
@@ -120,4 +124,10 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		} 
 		
 	}
+
+	@Override
+	protected void createToolBarActions(IManagedForm managedForm) {
+	}
+	
+	
 }

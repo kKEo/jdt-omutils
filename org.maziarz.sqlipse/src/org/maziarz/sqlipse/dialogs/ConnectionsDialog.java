@@ -20,7 +20,7 @@ public class ConnectionsDialog extends FormDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setSize(700, 500);
+		newShell.setSize(800, 500);
 
 		int height = newShell.getDisplay().getBounds().height;
 		int width = newShell.getDisplay().getBounds().width;

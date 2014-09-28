@@ -113,13 +113,6 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 		});
 
-		if (PlatformUI.isWorkbenchRunning()) {
-			List<JdbcConnection> connections = SqlipsePlugin.getDefault().getConfiguration().getConnections();
-			tv.setInput(connections.toArray());
-			if (connections.size() > 0) {
-				tv.setSelection(new StructuredSelection(connections.get(0)));
-			}
-		}
 		
 		addConnectionButton(tk, c);
 		
@@ -145,9 +138,16 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
-
 		detailsPart.registerPage(JdbcConnection.class, new ConnectionDetailsPage());
 
+		if (PlatformUI.isWorkbenchRunning()) {
+			List<JdbcConnection> connections = SqlipsePlugin.getDefault().getConfiguration().getConnections();
+			tv.setInput(connections.toArray());
+			if (connections.size() > 0) {
+				tv.setSelection(new StructuredSelection(connections.get(0)));
+			}
+		}
+		
 	}
 
 	@Override
