@@ -3,8 +3,6 @@ package org.maziarz.sqlipse.dialogs;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -103,26 +101,26 @@ final class DriverDetailsPage implements IDetailsPage {
 		return text;
 	}
 
-	private Text addJarControl(Composite parent) {
+	private Text addJarControl(final Composite parent) {
 
 		Composite c = tk.createComposite(parent);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginWidth = 10;
 		layout.marginRight = 10;
 		c.setLayout(layout);
-		tk.createLabel(c, "Jars" );
-		
+		tk.createLabel(c, "Jars");
+
 		Hyperlink browse = tk.createHyperlink(c, "browse", SWT.NONE);
 		final Text text = tk.createText(c, "", SWT.READ_ONLY);
-		
+
 		browse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				FileDialog fileDialog = new FileDialog(parent.getShell());
 				if (fileDialog.open() != null) {
 					StringBuilder sb = new StringBuilder();
-					for (String selected : fileDialog.getFileNames()){
-						sb.append(fileDialog.getFilterPath()+"/"+selected).append("\n");
+					for (String selected : fileDialog.getFileNames()) {
+						sb.append(fileDialog.getFilterPath() + "/" + selected).append("\n");
 					}
 					text.setText(sb.toString());
 				}
