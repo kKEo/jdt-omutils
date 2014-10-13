@@ -21,7 +21,7 @@
 		<repository>
 			<id>kepler</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/kepler</url>
+			<url>http://download.eclipse.org/releases/luna</url>
 			<!-- file URL for faster and offline builds -->
 			<!-- <url>file:/home/krma/Eclipses/PDTDevel</url> -->
 		</repository>

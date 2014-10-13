@@ -17,7 +17,7 @@ public class DriversDialog extends FormDialog {
 	protected void createFormContent(final IManagedForm mform) {
 		DriversMasterDetailsBlock mdb = new DriversMasterDetailsBlock();
 		mdb.createContent(mform);
-		mform.getForm().setText("Manage Jdbc Drivers");
+		super.createFormContent(mform);
 	}
 
 	@Override
