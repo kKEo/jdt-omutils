@@ -45,18 +45,18 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 		Section section = tk.createSection(parent, Section.TITLE_BAR);
 		section.setText("Jdbc Connections");
-		section.setDescription("The list contains defined connections");
+		section.setDescription("The list of available connections");
 		section.marginHeight = section.marginWidth = 4;
 
 		Composite c = tk.createComposite(section, SWT.WRAP);
 		c.setLayout(new GridLayout());
-
 		tk.paintBordersFor(c);
 
 		Tree t = tk.createTree(c, SWT.BORDER);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(t);
 
 		section.setClient(c);
+		
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 
@@ -120,7 +120,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	private void addConnectionButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Add connection", SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER);
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
 		
 		b.addMouseListener(new MouseAdapter() {
 			@Override
@@ -129,7 +129,6 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 				JdbcConnection connection = new JdbcConnection(null, "new connection", "", "", "");
 				configuration.addConnection(connection);
 				tv.setInput(configuration.getConnections().toArray());
-				tv.refresh();
 				tv.setSelection(new StructuredSelection(connection));
 			}
 		});
