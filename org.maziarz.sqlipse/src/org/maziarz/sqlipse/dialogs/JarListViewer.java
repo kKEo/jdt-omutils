@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -72,6 +73,10 @@ public class JarListViewer {
 			sb.append(""+el).append("\n");
 		}
 		return sb.toString();
+	}
+
+	public void addModifyListener(ModifyListener modifyListener) {
+		
 	}
 
 }

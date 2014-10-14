@@ -16,6 +16,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
@@ -31,19 +32,20 @@ import org.maziarz.sqlipse.SqlipsePlugin;
 final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	
 	private TreeViewer tv;
+	private Composite parent;
 
-	
+	public DriversMasterDetailsBlock(Composite parent) {
+		this.parent = parent;
+	}
+
 	@Override
 	public void createContent(IManagedForm managedForm) {
-		super.createContent(managedForm);
+		createContent(managedForm, parent);
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
-	
-
 
 	@Override
 	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
-
 		FormToolkit tk = managedForm.getToolkit();
 
 		Section section = tk.createSection(parent, Section.TITLE_BAR);
@@ -155,6 +157,10 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 
 	@Override
 	protected void createToolBarActions(IManagedForm managedForm) {
+	}
+
+	public Control getControl() {
+		return sashForm;
 	}
 	
 	

@@ -15,7 +15,7 @@ public class DriversDialog extends FormDialog {
 
 	@Override
 	protected void createFormContent(final IManagedForm mform) {
-		DriversMasterDetailsBlock mdb = new DriversMasterDetailsBlock();
+		DriversMasterDetailsBlock mdb = new DriversMasterDetailsBlock(mform.getForm().getBody());
 		mdb.createContent(mform);
 		super.createFormContent(mform);
 	}

@@ -33,10 +33,9 @@ final class DriverDetailsPage implements IDetailsPage {
 	
 	private IManagedForm mform;
 	
-	private JdbcDriver jdbcConnection;
+	private JdbcDriver model;
+	private JdbcDriver localModel;
 	
-	private boolean isDirty = false;
-
 	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
 
@@ -44,14 +43,20 @@ final class DriverDetailsPage implements IDetailsPage {
 			Object s = ((IStructuredSelection) selection).getFirstElement();
 
 			if (s instanceof JdbcDriver) {
-				jdbcConnection = (JdbcDriver)s;
-				tName.setText(Strings.emptyIfNull(jdbcConnection.getName()));
-				tJars.setInput(jdbcConnection.getJars());
-				tDriverClass.setText(Strings.emptyIfNull(jdbcConnection.getDriverClass()));
+				model = (JdbcDriver)s;
+				localModel = JdbcDriver.cloneMe(model);
+				
+				initializeForm();
 				
 				tName.setFocus();
 			}
 		}
+	}
+
+	private void initializeForm() {
+		tName.setText(Strings.emptyIfNull(localModel.getName()));
+		tJars.setInput(localModel.getJars());
+		tDriverClass.setText(Strings.emptyIfNull(localModel.getDriverClass()));
 	}
 
 	@Override
@@ -75,7 +80,7 @@ final class DriverDetailsPage implements IDetailsPage {
 
 	@Override
 	public boolean isDirty() {
-		return isDirty;
+		return !model.equals(localModel);
 	}
 
 	@Override
@@ -116,8 +121,7 @@ final class DriverDetailsPage implements IDetailsPage {
 		tName.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				jdbcConnection.setName(tName.getText());
-				isDirty = true;
+				localModel.setName(tName.getText());
 				for (IFormPart part : mform.getParts()) {
 					if (part instanceof SectionPart) {
 						((SectionPart)part).markStale();
@@ -127,17 +131,31 @@ final class DriverDetailsPage implements IDetailsPage {
 			}
 		});
 		
+		tJars.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				localModel.setJars(tJars.getJars());
+			}
+		});
+		
+		tDriverClass.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				localModel.setDriverClass(tDriverClass.getText());
+			}
+		});
+		
 		addApplyDeleteComposite(container);
 		
 	}
 
-	private void addApplyDeleteComposite(Composite container) {
+	private void addApplyDeleteComposite(final Composite container) {
 
 		Composite c = tk.createComposite(container);
 		c.setLayout(new FormLayout());
 		
 		Button apply = tk.createButton(c, "Apply", SWT.PUSH);
-		Button delete = tk.createButton(c, "Delete", SWT.PUSH);
+		Button reset = tk.createButton(c, "Reset", SWT.PUSH);
 		
 		FormData layoutData = new FormData();
 		layoutData.right = new FormAttachment(100, -30);
@@ -145,25 +163,32 @@ final class DriverDetailsPage implements IDetailsPage {
 		
 		layoutData = new FormData();
 		layoutData.right = new FormAttachment(apply, -10);
-		delete.setLayoutData(layoutData);
+		reset.setLayoutData(layoutData);
 		
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(c);
 		
 		apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				isDirty = false;
+				apply(model, localModel);
+				initializeForm();
 			}
 		});
 		
-		delete.addMouseListener(new MouseAdapter() {
+		reset.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				
+				apply(localModel, model);
+				initializeForm();
 			}
 		});
 		
-		
+	}
+	
+	private void apply(JdbcDriver model, JdbcDriver localModel) {
+		model.setName(localModel.getName());
+		model.setJars(localModel.getJars());
+		model.setDriverClass(localModel.getDriverClass());
 	}
 
 	private Text addTextControl(Composite parent, String label) {

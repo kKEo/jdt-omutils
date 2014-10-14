@@ -16,6 +16,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
@@ -31,10 +32,15 @@ import org.maziarz.sqlipse.SqlipsePlugin;
 public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	private TreeViewer tv;
+	private Composite parent;
+
+	public ConnectionsMasterDetailsBlock(Composite parent) {
+		this.parent = parent;
+	}
 
 	@Override
 	public void createContent(IManagedForm managedForm) {
-		super.createContent(managedForm);
+		createContent(managedForm, parent);
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
@@ -56,7 +62,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(t);
 
 		section.setClient(c);
-		
+
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 
@@ -113,15 +119,14 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 		});
 
-		
 		addConnectionButton(tk, c);
-		
+
 	}
 
 	private void addConnectionButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Add connection", SWT.PUSH);
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
-		
+
 		b.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -132,7 +137,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 				tv.setSelection(new StructuredSelection(connection));
 			}
 		});
-		
+
 	}
 
 	@Override
@@ -146,11 +151,15 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 				tv.setSelection(new StructuredSelection(connections.get(0)));
 			}
 		}
-		
+
 	}
 
 	@Override
 	protected void createToolBarActions(IManagedForm managedForm) {
+	}
+
+	public Control getControl() {
+		return sashForm;
 	}
 
 }
