@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
@@ -27,12 +26,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.maziarz.sqlipse.Configuration;
 import org.maziarz.sqlipse.JdbcConnection;
-import org.maziarz.sqlipse.SqlipsePlugin;
 
 public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	private TreeViewer tv;
 	private Composite parent;
+	private IManagedForm mform;
 
 	public ConnectionsMasterDetailsBlock(Composite parent) {
 		this.parent = parent;
@@ -40,6 +39,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	@Override
 	public void createContent(IManagedForm managedForm) {
+		this.mform = managedForm;
 		createContent(managedForm, parent);
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
@@ -130,8 +130,8 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 		b.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				Configuration configuration = SqlipsePlugin.getDefault().getConfiguration();
-				JdbcConnection connection = new JdbcConnection(null, "new connection", "", "", "");
+				Configuration configuration = (Configuration) mform.getInput();
+				JdbcConnection connection = new JdbcConnection(null, "newConnection", "", "", "");
 				configuration.addConnection(connection);
 				tv.setInput(configuration.getConnections().toArray());
 				tv.setSelection(new StructuredSelection(connection));
@@ -143,15 +143,15 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 		detailsPart.registerPage(JdbcConnection.class, new ConnectionDetailsPage());
+		setInput((Configuration) mform.getInput());
+	}
 
-		if (PlatformUI.isWorkbenchRunning()) {
-			List<JdbcConnection> connections = SqlipsePlugin.getDefault().getConfiguration().getConnections();
-			tv.setInput(connections.toArray());
-			if (connections.size() > 0) {
-				tv.setSelection(new StructuredSelection(connections.get(0)));
-			}
+	public void setInput(Configuration config) {
+		List<JdbcConnection> connections = config.getConnections();
+		tv.setInput(connections.toArray());
+		if (connections.size() > 0) {
+			tv.setSelection(new StructuredSelection(connections.get(0)));
 		}
-
 	}
 
 	@Override

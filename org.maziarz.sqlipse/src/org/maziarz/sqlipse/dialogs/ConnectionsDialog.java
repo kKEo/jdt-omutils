@@ -13,18 +13,26 @@ import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.maziarz.sqlipse.Configuration;
+import org.maziarz.sqlipse.SqlipsePlugin;
 
 public class ConnectionsDialog extends FormDialog {
 
-	Shell shell;
+	private Shell shell;
+	private IManagedForm mform;
+	private Configuration configuration;
 
-	public ConnectionsDialog(Shell shell) {
+	public ConnectionsDialog(Shell shell, Configuration c) {
 		super(shell);
 		this.shell = shell;
+		this.configuration = c ;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
+		
+		this.mform = mform;
+		this.mform.setInput(configuration);
 		
 		mform.getForm().setText("Jdbc Connections");
 		
@@ -57,7 +65,7 @@ public class ConnectionsDialog extends FormDialog {
 	}
 	
 	private void updateSelection(CTabFolder cTabFolder){
-		CTabItem item = cTabFolder.getSelection();
+		cTabFolder.getSelection();
 	}
 
 	private void createTabs(IManagedForm mform, CTabFolder cTabFolder) {
@@ -104,5 +112,19 @@ public class ConnectionsDialog extends FormDialog {
 		newShell.setLocation(mainShellXOffset + mainShellWidth / 2 - newShell.getSize().x / 2, mainShellYOffset + mainShellHeight
 				/ 2 - newShell.getSize().y / 2);
 	}
+	
+	@Override
+	public int open() {
+		return super.open();
+	}
 
+	@Override
+	protected void okPressed() {
+		Object o = mform.getInput();
+		if (o instanceof Configuration) {
+			SqlipsePlugin.getDefault().writeConfig((Configuration)o);
+		}
+		super.okPressed();
+	}
+	
 }

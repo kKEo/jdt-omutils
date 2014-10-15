@@ -186,7 +186,7 @@ public class DataViewPart extends ViewPart {
 		
 		connections = new ComboViewer(c);
 		connections.setContentProvider(ArrayContentProvider.getInstance());
-		connections.setInput(SqlipsePlugin.getDefault().getConfiguration().getConnections());
+		connections.setInput(SqlipsePlugin.getDefault().readConfig().getConnections());
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(connections.getControl());
 		
 		Button bRun = new Button(c, SWT.PUSH);

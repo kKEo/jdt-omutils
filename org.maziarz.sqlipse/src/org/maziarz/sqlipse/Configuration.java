@@ -52,6 +52,15 @@ public class Configuration {
 		return null;
 	}
 	
+	public JdbcDriver getDriverByName(String driverName) {
+		for (JdbcDriver driver: drivers) {
+			if (driver.getName().equals(driverName)){
+				return driver;
+			}
+		}
+		return null;
+	}
+	
 	public static Configuration read(InputStream is) throws JAXBException {
 		JAXBContext context = JAXBContext.newInstance(Configuration.class);
 		Configuration result = (Configuration) context.createUnmarshaller().unmarshal(is);
@@ -64,5 +73,7 @@ public class Configuration {
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		m.marshal(o, os);
 	}
+
+
 
 }

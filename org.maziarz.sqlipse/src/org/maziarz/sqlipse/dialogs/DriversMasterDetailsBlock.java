@@ -33,6 +33,7 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	
 	private TreeViewer tv;
 	private Composite parent;
+	private IManagedForm mform;
 
 	public DriversMasterDetailsBlock(Composite parent) {
 		this.parent = parent;
@@ -41,6 +42,7 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	@Override
 	public void createContent(IManagedForm managedForm) {
 		createContent(managedForm, parent);
+		this.mform = managedForm;
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
@@ -52,7 +54,6 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		section.setText("Jdbc Drivers");
 		section.setDescription("The list of connection defined for sql execution");
 		section.marginHeight = section.marginWidth = 4;
-		
 
 		Composite c = tk.createComposite(section, SWT.WRAP);
 		c.setLayout(new GridLayout());
@@ -130,8 +131,8 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 
 		b.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
-				Configuration configuration = SqlipsePlugin.getDefault().getConfiguration();
-				JdbcDriver driver = new JdbcDriver("", "", "");
+				Configuration configuration = (Configuration) mform.getInput();
+				JdbcDriver driver = new JdbcDriver("newDriver", "", "");
 				configuration.addDriver(driver);
 				
 				tv.setInput(configuration.getDrivers().toArray());
@@ -146,7 +147,7 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		detailsPart.registerPage(JdbcDriver.class, new DriverDetailsPage());
 		
 		if (PlatformUI.isWorkbenchRunning()) {
-			List<JdbcDriver> drivers = SqlipsePlugin.getDefault().getConfiguration().getDrivers();
+			List<JdbcDriver> drivers = SqlipsePlugin.getDefault().readConfig().getDrivers();
 			tv.setInput(drivers.toArray());
 			if (drivers.size() > 0) {
 				tv.setSelection(new StructuredSelection(drivers.get(0)));

@@ -26,7 +26,9 @@ import org.maziarz.sqlipse.JdbcDriver;
 import org.maziarz.sqlipse.utils.Strings;
 
 final class DriverDetailsPage implements IDetailsPage {
+	
 	private FormToolkit tk;
+	
 	private Text tName;
 	private JarListViewer tJars;
 	private Text tDriverClass;
@@ -47,8 +49,7 @@ final class DriverDetailsPage implements IDetailsPage {
 				localModel = JdbcDriver.cloneMe(model);
 				
 				initializeForm();
-				
-				tName.setFocus();
+				setFocus();
 			}
 		}
 	}
@@ -95,7 +96,6 @@ final class DriverDetailsPage implements IDetailsPage {
 
 	@Override
 	public void commit(boolean onSave) {
-		
 	}
 
 	@Override

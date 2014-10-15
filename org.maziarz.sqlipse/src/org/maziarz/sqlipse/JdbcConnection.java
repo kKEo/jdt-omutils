@@ -13,9 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class JdbcConnection {
 
 	@XmlAttribute
@@ -34,8 +38,8 @@ public class JdbcConnection {
 	@XmlAttribute
 	private JdbcDriver driver;
 
+	@XmlTransient
 	private Connection connection;
-
 
 	private static class ClassLoaderCache {
 
@@ -87,18 +91,18 @@ public class JdbcConnection {
 	private JdbcConnection() {
 	}
 
-	public JdbcConnection(JdbcDriver driver, String name, String conn, String user, String pass) {
+	public JdbcConnection(JdbcDriver driver, String name, String connectionUrl, String username, String password) {
 		this.name = name;
-		this.connectionUrl = conn;
+		this.connectionUrl = connectionUrl;
 		this.driver = driver;
-		this.username = user;
-		this.password = pass;
+		this.username = username;
+		this.password = password;
 	}
 
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getConnectionUrl() {
 		return connectionUrl;
 	}
@@ -106,11 +110,11 @@ public class JdbcConnection {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public JdbcDriver getDriver() {
 		return driver;
 	}
@@ -143,6 +147,31 @@ public class JdbcConnection {
 
 	@Override
 	public String toString() {
-		return name ;//+ "(" + connectionUrl + ")";
+		return name;// + "(" + connectionUrl + ")";
 	}
+
+	public static JdbcConnection cloneMe(JdbcConnection c) {
+		return new JdbcConnection(c.getDriver(), c.getName(), c.getConnectionUrl(), c.getUsername(), c.getPassword());
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setConnectionUrl(String connectionUrl) {
+		this.connectionUrl = connectionUrl;
+	}
+	
+	public void setDriver(JdbcDriver driver) {
+		this.driver = driver;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 }

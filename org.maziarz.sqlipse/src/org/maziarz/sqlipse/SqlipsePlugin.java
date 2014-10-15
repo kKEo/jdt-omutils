@@ -39,14 +39,14 @@ public class SqlipsePlugin extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 	
-	private File getConfigurationFile() {
+	private File getConfigFile() {
 		File file = SqlipsePlugin.getDefault().getStateLocation().append("config.xml").toFile();
-		SqlipsePlugin.getDefault().getLog().log(new Status(Status.INFO, PLUGIN_ID, "Config file: "+file.getAbsolutePath()));
+		getLog().log(new Status(Status.INFO, PLUGIN_ID, "Config file: "+file.getAbsolutePath()));
 		return file;
 	}
 
-	public Configuration getConfiguration() {
-		File configuration = getConfigurationFile();
+	public Configuration readConfig() {
+		File configuration = getConfigFile();
 		try (FileInputStream fis = new FileInputStream(configuration)){
 			return Configuration.read(fis);
 		} catch (IOException e) {
@@ -56,13 +56,14 @@ public class SqlipsePlugin extends AbstractUIPlugin {
 		}
 	}
 	
-	public void putConfiguration(Configuration c) {
-		File configurationFile = getConfigurationFile();
+	public void writeConfig(Configuration c) {
+		File configurationFile = getConfigFile();
 		try(FileOutputStream fos = new FileOutputStream(configurationFile)) {
 			Configuration.write(c, fos);
 		} catch (JAXBException | IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+
 }
