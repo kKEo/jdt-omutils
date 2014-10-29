@@ -11,11 +11,11 @@ import org.eclipse.ui.commands.ICommandService;
 
 public class Utils {
 
-	public static void executeCommand(IWorkbenchPartSite site, String commandId) {
+	public static Object executeCommand(IWorkbenchPartSite site, String commandId) {
 		ICommandService commandService = (ICommandService) site.getService(ICommandService.class);
 		Command c = commandService.getCommand(commandId);
 		try {
-			c.executeWithChecks(new ExecutionEvent());
+			return c.executeWithChecks(new ExecutionEvent());
 		} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e1) {
 			throw new RuntimeException(e1);
 		}

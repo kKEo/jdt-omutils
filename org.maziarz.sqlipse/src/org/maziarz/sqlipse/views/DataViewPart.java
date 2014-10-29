@@ -181,6 +181,7 @@ public class DataViewPart extends ViewPart {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				Utils.executeCommand(DataViewPart.this.getSite(), "sqlipse.commands.configureConnections");
+				connections.setInput(SqlipsePlugin.getDefault().readConfig().getConnections());
 			}
 		});
 		
