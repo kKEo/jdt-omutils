@@ -20,19 +20,21 @@ public class ConnectionsDialog extends FormDialog {
 
 	private Shell shell;
 	private IManagedForm mform;
-	private Configuration configuration;
+	private Configuration config;
+	private ConnectionsMasterDetailsBlock connectionsMdb;
+	private DriversMasterDetailsBlock driversMdb;
 
 	public ConnectionsDialog(Shell shell, Configuration c) {
 		super(shell);
 		this.shell = shell;
-		this.configuration = c ;
+		this.config = c ;
 	}
 
 	@Override
 	protected void createFormContent(IManagedForm mform) {
 		
 		this.mform = mform;
-		this.mform.setInput(configuration);
+		this.mform.setInput(config);
 		
 		mform.getForm().setText("Jdbc Connections");
 		
@@ -65,14 +67,16 @@ public class ConnectionsDialog extends FormDialog {
 	}
 	
 	private void updateSelection(CTabFolder cTabFolder){
-		cTabFolder.getSelection();
+		if (cTabFolder.getSelectionIndex() == 0) {
+			connectionsMdb.setInput(config);
+		} else {
+			driversMdb.setInput(config);
+		}
 	}
 
 	private void createTabs(IManagedForm mform, CTabFolder cTabFolder) {
-		
 		createConnectionsTab(mform, cTabFolder, "Connections");
 		createDriversTab(mform, cTabFolder, "Drivers");
-		
 	}
 
 	private void createConnectionsTab(IManagedForm mform, CTabFolder cTabFolder, String title) {
@@ -80,10 +84,10 @@ public class ConnectionsDialog extends FormDialog {
 		CTabItem item = new CTabItem(cTabFolder, SWT.NONE);
 		item.setText(title);
 		
-		ConnectionsMasterDetailsBlock mdb = new ConnectionsMasterDetailsBlock(cTabFolder);
-		mdb.createContent(mform);
-		
-		item.setControl(mdb.getControl());
+		connectionsMdb = new ConnectionsMasterDetailsBlock(cTabFolder);
+		connectionsMdb.createContent(mform);
+
+		item.setControl(connectionsMdb.getControl());
 	}
 	
 	private void createDriversTab(IManagedForm mform, CTabFolder cTabFolder, String title) {
@@ -91,11 +95,10 @@ public class ConnectionsDialog extends FormDialog {
 		CTabItem item = new CTabItem(cTabFolder, SWT.NONE);
 		item.setText(title);
 		
-		DriversMasterDetailsBlock block = new DriversMasterDetailsBlock(cTabFolder);
-		block.createContent(mform);
+		driversMdb = new DriversMasterDetailsBlock(cTabFolder);
+		driversMdb.createContent(mform);
 		
-		item.setControl(block.getControl());
-		
+		item.setControl(driversMdb.getControl());
 	}
 
 	@Override

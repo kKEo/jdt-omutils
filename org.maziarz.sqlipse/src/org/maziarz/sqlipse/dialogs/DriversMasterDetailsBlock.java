@@ -27,7 +27,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.maziarz.sqlipse.Configuration;
 import org.maziarz.sqlipse.JdbcDriver;
-import org.maziarz.sqlipse.SqlipsePlugin;
 
 final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	
@@ -41,8 +40,8 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 
 	@Override
 	public void createContent(IManagedForm managedForm) {
-		createContent(managedForm, parent);
 		this.mform = managedForm;
+		createContent(mform, parent);
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
@@ -64,14 +63,14 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		
 		section.setClient(c);
 		
-		final SectionPart spart = new SectionPart(section) {
+		final SectionPart spart = new SectionPart(section)/*- {
 			
 			@Override
 			public void refresh() {
 				tv.refresh();
 			}
 			
-		};
+		}*/;
 		managedForm.addPart(spart);
 		
 		tv = new TreeViewer(tree);
@@ -146,21 +145,25 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	protected void registerPages(DetailsPart detailsPart) {
 		detailsPart.registerPage(JdbcDriver.class, new DriverDetailsPage());
 		
+		setInput((Configuration) mform.getInput()); 
+		
+	}
+
+	protected void setInput(Configuration config) {
 		if (PlatformUI.isWorkbenchRunning()) {
-			List<JdbcDriver> drivers = SqlipsePlugin.getDefault().readConfig().getDrivers();
+			List<JdbcDriver> drivers = config.getDrivers();
 			tv.setInput(drivers.toArray());
 			if (drivers.size() > 0) {
-				tv.setSelection(new StructuredSelection(drivers.get(0)));
+				tv.setSelection(new StructuredSelection(drivers.get(0)), true);
 			}
-		} 
-		
+		}
 	}
 
 	@Override
 	protected void createToolBarActions(IManagedForm managedForm) {
 	}
 
-	public Control getControl() {
+	protected Control getControl() {
 		return sashForm;
 	}
 	

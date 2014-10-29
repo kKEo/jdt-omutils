@@ -40,7 +40,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 	@Override
 	public void createContent(IManagedForm managedForm) {
 		this.mform = managedForm;
-		createContent(managedForm, parent);
+		createContent(mform, parent);
 		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
@@ -58,15 +58,16 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 		c.setLayout(new GridLayout());
 		tk.paintBordersFor(c);
 
-		Tree t = tk.createTree(c, SWT.BORDER);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(t);
+		Tree tree = tk.createTree(c, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).applyTo(tree);
 
 		section.setClient(c);
 
 		final SectionPart spart = new SectionPart(section);
+		
 		managedForm.addPart(spart);
 
-		tv = new TreeViewer(t);
+		tv = new TreeViewer(tree);
 		tv.setLabelProvider(new LabelProvider());
 		tv.setContentProvider(new ITreeContentProvider() {
 
@@ -146,11 +147,11 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 		setInput((Configuration) mform.getInput());
 	}
 
-	public void setInput(Configuration config) {
+	protected void setInput(Configuration config) {
 		List<JdbcConnection> connections = config.getConnections();
 		tv.setInput(connections.toArray());
 		if (connections.size() > 0) {
-			tv.setSelection(new StructuredSelection(connections.get(0)));
+			tv.setSelection(new StructuredSelection(connections.get(0)), true);
 		}
 	}
 
@@ -158,8 +159,9 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 	protected void createToolBarActions(IManagedForm managedForm) {
 	}
 
-	public Control getControl() {
+	protected Control getControl() {
 		return sashForm;
 	}
+	
 
 }
