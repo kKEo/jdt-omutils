@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -63,14 +64,7 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		
 		section.setClient(c);
 		
-		final SectionPart spart = new SectionPart(section)/*- {
-			
-			@Override
-			public void refresh() {
-				tv.refresh();
-			}
-			
-		}*/;
+		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 		
 		tv = new TreeViewer(tree);
@@ -123,8 +117,12 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 			}
 		});
 		
-		
-		
+		addDriverButton(tk, c);
+		removeDriverButton(tk, c);
+	
+	}
+
+	private void addDriverButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Add driver", SWT.PUSH);
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
 
@@ -138,15 +136,30 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 				tv.setSelection(new StructuredSelection(driver));
 			};
 		});
-		
+	}
+	
+	private void removeDriverButton(FormToolkit tk, Composite c) {
+		Button b = tk.createButton(c, "Remove driver", SWT.PUSH);
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
+
+		b.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Configuration configuration = (Configuration) mform.getInput();
+				if (!tv.getSelection().isEmpty()) {
+					IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
+					Object o = selection.getFirstElement();
+					tv.remove(o);
+					configuration.remove((JdbcDriver)o);
+				}
+			}
+		});
 	}
 	
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 		detailsPart.registerPage(JdbcDriver.class, new DriverDetailsPage());
-		
 		setInput((Configuration) mform.getInput()); 
-		
 	}
 
 	protected void setInput(Configuration config) {

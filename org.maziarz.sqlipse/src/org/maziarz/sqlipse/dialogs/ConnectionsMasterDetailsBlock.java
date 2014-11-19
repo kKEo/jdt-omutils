@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -55,16 +56,16 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 		section.marginHeight = section.marginWidth = 4;
 
 		Composite c = tk.createComposite(section, SWT.WRAP);
-		c.setLayout(new GridLayout());
+		c.setLayout(new GridLayout(2, false));
 		tk.paintBordersFor(c);
 
 		Tree tree = tk.createTree(c, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).hint(200, SWT.DEFAULT).applyTo(tree);
 
 		section.setClient(c);
 
 		final SectionPart spart = new SectionPart(section);
-		
+
 		managedForm.addPart(spart);
 
 		tv = new TreeViewer(tree);
@@ -121,7 +122,26 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 		});
 
 		addConnectionButton(tk, c);
+		removeConnectionButton(tk, c);
 
+	}
+
+	private void removeConnectionButton(FormToolkit tk, Composite c) {
+		Button b = tk.createButton(c, "Remove connection", SWT.PUSH);
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
+
+		b.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				Configuration configuration = (Configuration) mform.getInput();
+				if (!tv.getSelection().isEmpty()) {
+					IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
+					Object o = selection.getFirstElement();
+					tv.remove(o);
+					configuration.remove((JdbcConnection)o);
+				}
+			}
+		});
 	}
 
 	private void addConnectionButton(FormToolkit tk, Composite c) {
@@ -162,6 +182,5 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 	protected Control getControl() {
 		return sashForm;
 	}
-	
 
 }

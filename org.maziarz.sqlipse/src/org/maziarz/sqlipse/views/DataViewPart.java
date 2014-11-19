@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -39,6 +40,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
+import org.maziarz.sqlipse.Configuration;
 import org.maziarz.sqlipse.JdbcConnection;
 import org.maziarz.sqlipse.SqlipsePlugin;
 import org.maziarz.sqlipse.Utils;
@@ -181,7 +183,21 @@ public class DataViewPart extends ViewPart {
 			@Override
 			public void mouseUp(MouseEvent e) {
 				Utils.executeCommand(DataViewPart.this.getSite(), "sqlipse.commands.configureConnections");
-				connections.setInput(SqlipsePlugin.getDefault().readConfig().getConnections());
+				
+				Object o = ((IStructuredSelection)connections.getSelection()).getFirstElement();
+				
+				String connectionName = "";
+				if (o instanceof JdbcConnection) {
+					connectionName= ((JdbcConnection) o).getName();
+				}
+				
+				Configuration config = SqlipsePlugin.getDefault().readConfig();
+				connections.setInput(config.getConnections());
+				
+				JdbcConnection connectionByName = config.getConnectionByName(connectionName);
+				if (connectionByName != null) {
+					connections.setSelection(new StructuredSelection(connectionByName));
+				}
 			}
 		});
 		
@@ -257,6 +273,7 @@ public class DataViewPart extends ViewPart {
 
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(new Separator());
+		manager.add(new Action("Hello"){});
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {

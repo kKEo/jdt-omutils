@@ -74,6 +74,12 @@ public class Configuration {
 		m.marshal(o, os);
 	}
 
+	public boolean remove(JdbcConnection o) {
+		return connections.remove(o);
+	}
 
+	public boolean remove(JdbcDriver o) {
+		return drivers.remove(o);
+	}
 
 }
