@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -87,6 +85,12 @@ public class DataViewPart extends ViewPart {
 					}
 				}
 			};
+		}
+		
+		if (SqlSourceProvider.class.equals(adapter)) {
+			
+			return scratchpad;
+			
 		}
 		
 		return super.getAdapter(adapter);
@@ -214,7 +218,7 @@ public class DataViewPart extends ViewPart {
 		GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(scratchpad);
 		
 		folder = new CTabFolder(sash, SWT.BORDER);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(sash, "dataexplorer.viewer");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(sash, "sqlipse.viewer");
 		contributeToActionBars();
 
 		sash.setWeights(new int[] { 1, 3 });
@@ -244,9 +248,6 @@ public class DataViewPart extends ViewPart {
 
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection) selection).getFirstElement();
-				System.out.println(obj);
 			}
 		});
 
@@ -272,8 +273,8 @@ public class DataViewPart extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(new Separator());
-		manager.add(new Action("Hello"){});
+//		manager.add(new Separator());
+//		manager.add(new Action("Hello"){});
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {

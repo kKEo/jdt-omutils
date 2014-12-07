@@ -6,8 +6,4 @@ public class Strings {
 		return name == null ? "" : name;
 	}
 
-	
-	
-	
-	
 }

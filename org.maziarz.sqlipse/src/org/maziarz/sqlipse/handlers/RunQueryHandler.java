@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.maziarz.sqlipse.JdbcConnection;
+import org.maziarz.sqlipse.views.SqlSourceProvider;
 
 public class RunQueryHandler extends AbstractHandler implements IHandler {
 
@@ -23,20 +24,17 @@ public class RunQueryHandler extends AbstractHandler implements IHandler {
 		ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
 
 		IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
-		Object adapter = activePart.getAdapter(ConnectionSupplier.class);
-		JdbcConnection jc = ((ConnectionSupplier) adapter).getConnection();
+		ConnectionSupplier connectionSupplier = (ConnectionSupplier)activePart.getAdapter(ConnectionSupplier.class);
+		JdbcConnection jc = connectionSupplier.getConnection();
 
+		SqlSourceProvider sourceProvider = (SqlSourceProvider) activePart.getAdapter(SqlSourceProvider.class);
+		
 		ResultSetProcessor rsp = (ResultSetProcessor) activePart.getAdapter(ResultSetProcessor.class);
 
 		if (currentSelection instanceof TextSelection) {
-			TextSelection currentSelection2 = (TextSelection) currentSelection;
-
-			if (currentSelection2.isEmpty()) {
-				System.out.println("Startline: " + currentSelection2.getStartLine());
-			}
-
-			String query = currentSelection2.getText();
-			System.out.println("Run Query: " + query);
+			
+			String query = sourceProvider.getScript();
+			System.out.println("Run Query: \"" + query +"\"");
 			Connection c = null;
 			try {
 				c = jc.connect();
