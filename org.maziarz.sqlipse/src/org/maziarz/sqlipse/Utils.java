@@ -6,12 +6,20 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 
 public class Utils {
 
+	public static Object executeCommand(String commandId) {
+		IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		return executeCommand(activePage.getActivePart().getSite(), commandId);
+	}
+	
 	public static Object executeCommand(IWorkbenchPartSite site, String commandId) {
+		
 		ICommandService commandService = (ICommandService) site.getService(ICommandService.class);
 		Command c = commandService.getCommand(commandId);
 		try {
