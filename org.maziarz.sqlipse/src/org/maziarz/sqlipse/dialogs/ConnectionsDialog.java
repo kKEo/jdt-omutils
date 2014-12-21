@@ -6,8 +6,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.FormDialog;
 import org.eclipse.ui.forms.IFormColors;
@@ -27,7 +26,7 @@ public class ConnectionsDialog extends FormDialog {
 	public ConnectionsDialog(Shell shell, Configuration c) {
 		super(shell);
 		this.shell = shell;
-		this.config = c ;
+		this.config = c;
 	}
 
 	@Override
@@ -38,18 +37,14 @@ public class ConnectionsDialog extends FormDialog {
 		
 		mform.getForm().setText("Jdbc Connections");
 		
-		GridLayout layout = new GridLayout();
-		layout.marginWidth = 10;
-		mform.getForm().getBody().setLayout(layout);
+		mform.getForm().getBody().setLayout(new FillLayout());
 		
 		final CTabFolder cTabFolder = new CTabFolder(mform.getForm().getBody(), SWT.FLAT | SWT.LEFT) ;
 		FormToolkit tk = mform.getToolkit();
 		tk.adapt(cTabFolder, true, true);
 		
-		cTabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
-		Color selectedColor = tk.getColors().getColor(IFormColors.SEPARATOR);
-		cTabFolder.setSelectionBackground(new Color[] {selectedColor, tk.getColors().getBackground()}, new int[] {50});
+		Color selectedColor = tk.getColors().getColor(IFormColors.H_HOVER_LIGHT);
+		cTabFolder.setSelectionBackground(new Color[] {tk.getColors().getBackground(), selectedColor}, new int[] {50});
 		tk.paintBordersFor(cTabFolder);
 		
 		createTabs(mform, cTabFolder);

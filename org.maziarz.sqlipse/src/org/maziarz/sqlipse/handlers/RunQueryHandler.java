@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -18,6 +20,21 @@ import org.maziarz.sqlipse.views.SqlSourceProvider;
 
 public class RunQueryHandler extends AbstractHandler implements IHandler {
 
+	private Map<JdbcConnection,Connection> connections = new HashMap<>();
+	
+	private Connection getConneciton(JdbcConnection c){
+		
+		if (connections.get(c) == null) {
+			try {
+				connections.put(c, c.connect());
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return connections.get(c);
+	}	
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
@@ -35,40 +52,31 @@ public class RunQueryHandler extends AbstractHandler implements IHandler {
 			
 			String query = sourceProvider.getScript();
 			System.out.println("Run Query: \"" + query +"\"");
-			Connection c = null;
+			Connection conn = null;
 			try {
-				c = jc.connect();
+				conn = getConneciton(jc);
 
-				DatabaseMetaData metaData = c.getMetaData();
+				DatabaseMetaData metaData = conn.getMetaData();
 				System.out.println("Driver name: " + metaData.getDriverName());
 
 				if (query.trim().toUpperCase().startsWith("SELECT") //
 						|| query.trim().toUpperCase().startsWith("SHOW")) {
 					ResultSet rs = null;
 					if ("SQLiteJDBC".equals(metaData.getDriverName())) {
-						rs = c.prepareStatement(query).executeQuery();
+						rs = conn.prepareStatement(query).executeQuery();
 					} else {
-						rs = c.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery();
+						rs = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeQuery();
 					}
 					rsp.process(rs);
 				} else {
-					boolean res = c.prepareStatement(query).execute();
+					boolean res = conn.prepareStatement(query).execute();
 					System.out.println("Result: " + res);
 				}
 
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
-				throw new RuntimeException("" + e, e);
-			} finally {
-				try {
-					c.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
 			}
-
 		}
-
-		System.out.println(currentSelection);
 
 		return null;
 	}

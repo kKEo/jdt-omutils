@@ -42,7 +42,6 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 	public void createContent(IManagedForm managedForm) {
 		this.mform = managedForm;
 		createContent(mform, parent);
-		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
 	@Override
@@ -128,7 +127,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	private void removeConnectionButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Remove connection", SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(b);
 
 		b.addMouseListener(new MouseAdapter() {
 			@Override
@@ -146,7 +145,7 @@ public class ConnectionsMasterDetailsBlock extends MasterDetailsBlock {
 
 	private void addConnectionButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Add connection", SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(b);
 
 		b.addMouseListener(new MouseAdapter() {
 			@Override

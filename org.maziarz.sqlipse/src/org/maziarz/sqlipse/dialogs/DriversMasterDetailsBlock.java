@@ -43,7 +43,6 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	public void createContent(IManagedForm managedForm) {
 		this.mform = managedForm;
 		createContent(mform, parent);
-		sashForm.setWeights(new int[] { 1, 2 });
 	}
 
 	@Override
@@ -56,11 +55,11 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		section.marginHeight = section.marginWidth = 4;
 
 		Composite c = tk.createComposite(section, SWT.WRAP);
-		c.setLayout(new GridLayout());
+		c.setLayout(new GridLayout(2, false));
 		tk.paintBordersFor(c);
 
 		Tree tree = tk.createTree(c, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).applyTo(tree);
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).hint(200, SWT.DEFAULT).applyTo(tree);
 		
 		section.setClient(c);
 		
@@ -124,7 +123,7 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 
 	private void addDriverButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Add driver", SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(b);
 
 		b.addMouseListener(new MouseAdapter() {
 			public void mouseUp(MouseEvent e) {
@@ -140,7 +139,7 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 	
 	private void removeDriverButton(FormToolkit tk, Composite c) {
 		Button b = tk.createButton(c, "Remove driver", SWT.PUSH);
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(b);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(b);
 
 		b.addMouseListener(new MouseAdapter() {
 			@Override

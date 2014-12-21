@@ -130,7 +130,7 @@ public class JdbcConnection {
 		Properties connectionProps = new Properties();
 		connectionProps.setProperty("user", username);
 		connectionProps.setProperty("password", password);
-
+		
 		Driver jdbcDriver = (Driver) cl.loadClass(driver.getDriverClass()).newInstance();
 		return jdbcDriver.connect(connectionUrl, connectionProps);
 
