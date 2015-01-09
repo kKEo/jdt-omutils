@@ -76,7 +76,6 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 
 			@Override
 			public void dispose() {
-
 			}
 
 			@Override
@@ -118,7 +117,6 @@ final class DriversMasterDetailsBlock extends MasterDetailsBlock {
 		
 		addDriverButton(tk, c);
 		removeDriverButton(tk, c);
-	
 	}
 
 	private void addDriverButton(FormToolkit tk, Composite c) {

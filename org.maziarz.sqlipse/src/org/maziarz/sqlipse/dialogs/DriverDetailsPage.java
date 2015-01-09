@@ -25,6 +25,41 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.maziarz.sqlipse.JdbcDriver;
 import org.maziarz.sqlipse.utils.Strings;
 
+
+enum SupportedDriver {
+	
+	Derby("org.apache.derby.jdbc.EmbeddedDriver", "derby"), //
+	FirebirdSQL("org.firebirdsql.jdbc.FBDriver", "firebirdsql"), //
+	H2("org.h2.Driver", "h2"), //
+	HSQLDB("org.hsqldb.jdbcDriver", "hsqldb"), //
+	IBMDB2("com.ibm.db2.jcc.DB2Driver", "db2jcc4"), //
+	MySQL("com.mysql.jdbc.Driver", "mysql-connector"), //
+	MSSQLServer("", "sqljdbc4"), //
+	Oracle("oracle.jdbc.OracleDriver", "ojdbc"), //
+	PostgreSQL("org.postgresql.Driver", "postgresql"), //
+	Sybase("com.sybase.jdbc3.jdbc.SybDriver", "jconnect"), //
+	SQLServer("net.sourceforge.jtds.jdbc.Driver", "jtds"), //
+	Teradata("com.teradata.jdbc.TeraDriver", "terajdbc4"), //
+	;
+
+	private String driver;
+	private String pattern;
+	
+	SupportedDriver(String driver, String pattern) {
+		this.driver = driver;
+		this.pattern = pattern;
+	}
+	
+	public String getDriver() {
+		return driver;
+	}
+	
+	public String getPattern() {
+		return pattern;
+	}
+
+}
+
 final class DriverDetailsPage implements IDetailsPage {
 	
 	private FormToolkit tk;
@@ -134,10 +169,20 @@ final class DriverDetailsPage implements IDetailsPage {
 		tJars.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				localModel.setJars(tJars.getJars());
+				String jars = tJars.getJars();
+				localModel.setJars(jars);
+
+				for (String s : jars.split("\n")) {
+					for (SupportedDriver d : SupportedDriver.values()) {
+						if (s.startsWith(d.getPattern())) {
+							tDriverClass.setText(d.getDriver());
+							return;
+						}
+					}
+				}
 			}
 		});
-		
+
 		tDriverClass.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -198,7 +243,7 @@ final class DriverDetailsPage implements IDetailsPage {
 		layout.marginRight = 10;
 		c.setLayout(layout);
 		tk.createLabel(c, label);
-		Text text = tk.createText(c, "", SWT.NONE);
+		Text text = tk.createText(c, "", SWT.BORDER);
 
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(c);

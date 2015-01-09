@@ -6,6 +6,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.text.BadLocationException;
@@ -22,7 +23,6 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -57,7 +57,7 @@ public class SqlScratchpad extends Composite implements SqlSourceProvider {
 		this.setLayout(new FillLayout());
 
 		FormToolkit ft = new FormToolkit(this.getDisplay());
-		ScrolledPageBook pageBook = ft.createPageBook(this, SWT.NONE);
+		final ScrolledPageBook pageBook = ft.createPageBook(this, SWT.NONE);
 
 		connectPanel = new ConnectPanel(pageBook.getContainer());
 		connectPanel.onConnect(new Runnable() {
@@ -86,7 +86,6 @@ public class SqlScratchpad extends Composite implements SqlSourceProvider {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				pageBook.showPage(PAGE_CONNECT_PANEL);
-				
 			}
 		});
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(b);
@@ -103,13 +102,10 @@ public class SqlScratchpad extends Composite implements SqlSourceProvider {
 		int sourceViewerStyle = SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 		text = new SourceViewer(c, cr, sourceViewerStyle);
 
-		SqlSourceViewerConfiguration configuration = new SqlSourceViewerConfiguration();
-		text.configure(configuration);
+		SourceViewerAddons.configure(text, new ProposalProvider(Arrays.asList("COL1", "COL2", "DOL")));
 
 		text.setEditable(true);
-
 		text.setDocument(new Document());
-
 		text.addTextListener(new ITextListener() {
 			@Override
 			public void textChanged(TextEvent event) {
@@ -140,7 +136,7 @@ public class SqlScratchpad extends Composite implements SqlSourceProvider {
 
 			}
 		});
-
+		
 		logs = new TextViewer(c, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		logs.setEditable(true);
 		logs.setDocument(new Document());
@@ -187,38 +183,13 @@ public class SqlScratchpad extends Composite implements SqlSourceProvider {
 
 	@Override
 	public String getScript() {
-
 		if (text.getSelection() instanceof TextSelection && ((TextSelection) text.getSelection()).getLength() > 0) {
 			return ((TextSelection) text.getSelection()).getText();
 		}
-
-		StyledText textWidget = text.getTextWidget();
-		int caretOffset = textWidget.getCaretOffset();
-		int caretOffsetLine = textWidget.getLineAtOffset(caretOffset);
-
-		String line = textWidget.getLine(caretOffsetLine);
-
-		if (line.trim().isEmpty()) {
-			return "";
-		}
-
-		int startLineIdx = caretOffsetLine + 1;
-		while (startLineIdx - 1 >= 0 && !textWidget.getLine(startLineIdx - 1).trim().isEmpty()) {
-			// System.out.println("" + (startLineIdx - 1) + ": " + textWidget.getLine(startLineIdx - 1));
-			startLineIdx--;
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		int endLineIdx = startLineIdx;
-		int lineCount = textWidget.getLineCount();
-		while (endLineIdx < lineCount && (line = textWidget.getLine(endLineIdx).trim()).isEmpty() == false) {
-			sb.append(line).append(System.getProperty("line.separator"));
-			endLineIdx++;
-		}
-
-		return sb.toString().trim();
+		return SourceViewerUtils.getScript(text).getText();
 	}
+
+
 
 	public Object getAdapter(Class<?> adapter) {
 

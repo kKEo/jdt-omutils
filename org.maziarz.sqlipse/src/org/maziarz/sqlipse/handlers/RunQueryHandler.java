@@ -31,7 +31,6 @@ public class RunQueryHandler extends AbstractHandler implements IHandler {
 				e.printStackTrace();
 			}
 		}
-		
 		return connections.get(c);
 	}	
 	

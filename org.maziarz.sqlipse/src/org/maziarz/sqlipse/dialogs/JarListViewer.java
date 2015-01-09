@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -24,7 +26,7 @@ public class JarListViewer {
 
 	private TableViewer jars;
 
-	public JarListViewer(FormToolkit tk, Composite parent) {
+	public JarListViewer(FormToolkit tk, final Composite parent) {
 
 		Composite c = tk.createComposite(parent);
 		GridLayout layout = new GridLayout(2, false);
@@ -50,6 +52,7 @@ public class JarListViewer {
 						jarPaths.add(fileDialog.getFilterPath() + "/" + selected);
 					}
 					jars.setInput(jarPaths);
+					jars.getTable().setFocus();
 				}
 			}
 		});
@@ -75,8 +78,15 @@ public class JarListViewer {
 		return sb.toString();
 	}
 
-	public void addModifyListener(ModifyListener modifyListener) {
-		
+	public void addModifyListener(final ModifyListener modifyListener) {
+
+		jars.addPostSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				modifyListener.modifyText(null);
+			}
+		});
 	}
 
 }

@@ -71,7 +71,6 @@ public class DataViewPart extends ViewPart {
 		return super.getAdapter(adapter);
 	}
 	
-
 	class ViewContentProvider implements IStructuredContentProvider {
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
